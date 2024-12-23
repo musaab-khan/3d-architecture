@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import whatWeDo from '../utilsData'
+// import whatWeDo from '../utilsData'
 
 const Features = () => {
   return (
