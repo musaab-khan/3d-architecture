@@ -5,7 +5,7 @@ const HowItWorks = () => {
     <div className='flex flex-col items-center h-screen text-white justify-evenly' style={{background: 'linear-gradient(90deg, #181818, #424242)'}}>
         <h2 className='font-bold text-[2.75rem]'>How it works</h2>
         <div className="flex flex-col md:flex-row h-[70%] w-[75%] rounded-xl bg-[#222222] gap-5 justify-evenly items-center p-5">
-            <div className="flex flex-col h-[70%] w-[15%] justify-evenly  text-2xl">
+            <div className="flex flex-col h-[70%] justify-evenly  text-2xl">
                 <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
                     <h3>Authenticate</h3>
                     <span> &#8594;</span>
