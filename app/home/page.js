@@ -32,69 +32,29 @@ const Page = () => {
                 </div>
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 w-[85%] gap-4 text-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 w-[85%] gap-4 text-2xl pb-10">
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
                 <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
                     <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
-                </div>
-                <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444]  rounded-xl m-auto p-[5%]'>
-                    <h2>Hospital</h2>
-                    <p>Dimensions: 200 x 150</p>
+                    <p className='text-xl'>Dimensions: 200 x 150</p>
                 </div>
             </div>
         </div>
