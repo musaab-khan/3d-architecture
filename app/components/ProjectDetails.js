@@ -1,12 +1,18 @@
 import React from 'react'
 import Image from 'next/image'
 
-const ProjectDetails = () => {
+const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
+    function handleContinueClick() {
+      if (step < 3) setStep(step + 1);
+      handleProjectDetailsClose;
+    }
+    
+    
   return (
     <div className="w-screen h-screen flex justify-center items-center fixed top-0" style={{background: 'rgba(0,0,0,0.5)'}}>
         <div className='w-[80vw] h-[80vh] bg-[#5A5A5A] flex flex-col md:flex-row text-white rounded-xl justify-evenly items-center relative'>
             <div className='w-[40%] h-[80%]'>{/* supposed to be a form */}
-                <div className='hidden flex flex-col h-full justify-between'>
+                <div className={`${step==1?'flex':'hidden'} flex-col h-full justify-between`}>
                     <h2 className='text-[2.125rem]'>Lets start with your projects basics</h2>
                     <input type="text" placeholder='Enter your project name' className='text-2xl bg-transparent' style={{borderBottom: '1px solid white'}}/>
                     <h2 className='text-[2.125rem]'>Dimensions</h2>
@@ -15,9 +21,9 @@ const ProjectDetails = () => {
                         <p>X</p>
                         <input type="text" placeholder='' className='bg-transparent border-2 h-full rounded-2xl'/>
                     </div>
-                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center'><p>Continue</p><span> &#8594;</span></button>
+                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleContinueClick}><p>Continue</p><span> &#8594;</span></button>
                 </div>
-                <div className='hidden flex flex-col h-full justify-between'>
+                <div className={`${step==2?'flex':'hidden'} flex-col h-full justify-between`}>
                     <h2 className='text-[2.125rem]'>Tell us more about your project</h2>
                     <div className="w-full">
                         <div className='w-full mb-1'>
@@ -35,9 +41,9 @@ const ProjectDetails = () => {
                         </div>
                     </div>
                     
-                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl'><p>Continue</p><span> &#8594;</span></button>
+                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleContinueClick}><p>Continue</p><span> &#8594;</span></button>
                 </div>
-                <div className='flex flex-col h-full justify-between'>
+                <div className={`${step==3?'flex':'hidden'} flex-col h-full justify-between`}>
                     <h2 className='text-[2.125rem]'>Tell us more about your project</h2>
                     <div className="w-full space-y-4">
                         <div className='w-full mb-1'>
@@ -58,14 +64,14 @@ const ProjectDetails = () => {
                         </div>
                     </div>
                     
-                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl'><p>Continue</p><span className='w-[34px] h-[34px] rounded-full border-[1px] border-slate-700 text-slate-700'> &#10003;</span></button>
+                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleProjectDetailsClose}><p>Continue</p><span className='w-[34px] h-[34px] rounded-full border-[1px] border-slate-700 text-slate-700'> &#10003;</span></button>
                 </div>
 
             </div>
             <div className='w-[30%] h-[50%] relative'>
                 <Image src='/assets/create-project-asset1.svg' alt='' fill></Image>
             </div>
-            <div className='absolute top-[2%] right-[3%] font-sans text-[3vh]'>&#10005;</div>
+            <div className='absolute top-[2%] right-[3%] font-sans text-[3vh] cursor-pointer' onClick={handleProjectDetailsClose}>&#10005;</div>
         </div>
 
     </div>
