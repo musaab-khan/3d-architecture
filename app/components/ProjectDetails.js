@@ -1,7 +1,16 @@
 import React from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
 
 const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
+
+    const router = useRouter(); // Initialize the router
+        
+    const handleNewProject = (e) => {
+      e.preventDefault();
+      router.push('/project'); // Navigate to /login
+    };
+
     function handleContinueClick() {
       if (step < 3) setStep(step + 1);
       handleProjectDetailsClose;
@@ -64,7 +73,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
                         </div>
                     </div>
                     
-                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleProjectDetailsClose}><p>Continue</p><span className='w-[34px] h-[34px] rounded-full border-[1px] border-slate-700 text-slate-700'> &#10003;</span></button>
+                    <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleNewProject}><p>Continue</p><span className='w-[34px] h-[34px] rounded-full border-[1px] border-slate-700 text-slate-700'> &#10003;</span></button>
                 </div>
 
             </div>
