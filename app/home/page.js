@@ -2,7 +2,6 @@
 import React,{useState} from 'react'
 import Image from 'next/image'
 import ProjectDetails from '../components/ProjectDetails'
-import UpdatedTag from '../components/UpdatedTag'
 
 
 const Page = () => {

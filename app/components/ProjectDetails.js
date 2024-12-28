@@ -13,7 +13,6 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
 
     function handleContinueClick() {
       if (step < 3) setStep(step + 1);
-      handleProjectDetailsClose;
     }
     
     
