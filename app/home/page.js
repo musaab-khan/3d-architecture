@@ -12,7 +12,7 @@ const Page = () => {
     function handleProjectDetailsClose (){
         setProjectDetails(!projectDetails);
         setStep(1);
-
+        console.log(localStorage.token)
     }
 
 
