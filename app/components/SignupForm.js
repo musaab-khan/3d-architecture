@@ -50,6 +50,7 @@ const SignupForm = () => {
       }
     } catch (error) {
       setError('An error occurred while signing up.');
+      console.log(error)
     }
   };
 

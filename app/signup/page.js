@@ -1,7 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
 import SignupForm from '../components/SignupForm'
-import GoogleLogin from '../components/GoogleLogin'
 
 const page = () => {
 
