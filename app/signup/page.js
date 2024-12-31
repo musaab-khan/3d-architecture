@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import SignupForm from '../components/SignupForm'
+import GoogleLoginComponent from '../components/GoogleLogin'
 
 const page = () => {
 
@@ -16,7 +17,7 @@ const page = () => {
                 <Image src='/assets/google-icon.svg' alt='' width={20} height={20} className='absolute left-4'/>
                 <p className='text-lg 2xl:text-xl'>Contine with Google</p>
             </button> */}
-            <GoogleLogin></GoogleLogin>
+            <GoogleLoginComponent></GoogleLoginComponent>
         </div>
     </div>
   )

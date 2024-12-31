@@ -11,7 +11,7 @@ const GoogleLoginComponent = () => {
     const { credential } = response; // This is the Google token ID
 
     // Send the tokenId to your backend
-    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'/auth/google-login', { // Change this URL to your backend API URL
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/google-login', { // Change this URL to your backend API URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const GoogleLoginComponent = () => {
         localStorage.setItem('authToken', data.token);
 
         // Redirect the user after successful login (optional)
-        router.push('/dashboard');
+        router.push('/home');
       })
       .catch((error) => {
         console.error('Login failed:', error);

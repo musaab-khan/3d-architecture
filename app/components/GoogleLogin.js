@@ -1,52 +1,66 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin
+import { GoogleLogin } from '@react-oauth/google'; // Import from @react-oauth/google
 
 const GoogleLoginComponent = () => {
   const router = useRouter();
 
-  // Handle successful login
+  // Callback function to handle successful login
   const handleLoginSuccess = (response) => {
-    const { credential } = response;  // This is the Google token ID
+    const { credential } = response; // This is the Google token ID
 
-    // Send the tokenId to your backend to verify the user
-    fetch('http://localhost:5000/auth/google-login', { // Adjust to your backend API URL
+    // Send the tokenId to your backend
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/google-login', { // Change this URL to your backend API URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tokenId: credential }), // Send the token to backend
+      body: JSON.stringify({ tokenId: credential }), // Pass the token to the backend
     })
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
+        // Handle successful authentication
         console.log('Login successful:', data);
-        // Save the JWT token to localStorage (or cookies) for further use
+
+        // Store the JWT token in localStorage (or cookies, as per your app's design)
         localStorage.setItem('authToken', data.token);
-        // Redirect the user to the dashboard or any other page
-        router.push('/dashboard');
+
+        // Redirect the user after successful login (optional)
+        router.push('/home');
       })
       .catch((error) => {
         console.error('Login failed:', error);
       });
   };
 
-  // Handle failed login attempt
+  // Callback function to handle failed login
   const handleLoginFailure = (error) => {
     console.error('Login Failed:', error);
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <GoogleLogin
-        onSuccess={handleLoginSuccess}  // Success callback
-        onError={handleLoginFailure}    // Error callback
-        useOneTap  // Optional: enables one-tap login
-        theme="filled_blue"
-        size="large"
-        shape="circle"
-      />
-    </div>
+       <GoogleLogin
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} // Your Google Client ID
+      onSuccess={handleLoginSuccess}
+      onFailure={handleLoginFailure}
+      render={(renderProps) => (
+        <button
+          className='flex bg-white rounded-xl text-black w-[70%] md:w-[30%] p-2 md:p-4 items-center justify-center relative'
+          onClick={renderProps.onClick} // This will trigger the Google Login popup
+          disabled={renderProps.disabled} // Disable the button if the login popup is in progress
+        >
+          <Image
+            src='/assets/google-icon.svg'
+            alt='Google Icon'
+            width={20}
+            height={20}
+            className='absolute left-4'
+          />
+          <p className='text-lg 2xl:text-xl'>Continue with Google</p>
+        </button>
+      )}
+    />
   );
 };
 
