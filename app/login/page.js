@@ -17,7 +17,7 @@ const page = () => {
             <Image src='/assets/google-icon.svg' alt='' width={20} height={20} className='absolute left-4'/>
             <p className='text-lg 2xl:text-xl'>Continue with Google</p>
         </button> */}
-        <GoogleLoginCompoent></GoogleLoginCompoent>
+        <GoogleLoginComponent></GoogleLoginComponent>
     </div>
   )
 }
