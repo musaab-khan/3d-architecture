@@ -1,6 +1,7 @@
 import React from 'react'
 import LoginForm from '../components/LoginForm'
 import Image from 'next/image'
+import GoogleLoginComponent from '../components/GoogleLogin'
 
 const page = () => {
 
@@ -12,10 +13,11 @@ const page = () => {
         </div>
         <LoginForm/>
         <p>OR</p>
-        <button className='flex bg-white rounded-xl text-black w-[70%] md:w-[30%] p-2 md:p-4 items-center justify-center relative'>
+        {/* <button className='flex bg-white rounded-xl text-black w-[70%] md:w-[30%] p-2 md:p-4 items-center justify-center relative'>
             <Image src='/assets/google-icon.svg' alt='' width={20} height={20} className='absolute left-4'/>
             <p className='text-lg 2xl:text-xl'>Continue with Google</p>
-        </button>
+        </button> */}
+        <GoogleLoginCompoent></GoogleLoginCompoent>
     </div>
   )
 }

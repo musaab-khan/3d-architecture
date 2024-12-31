@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { GoogleLogin } from '@react-oauth/google'; // Import from @react-oauth/google
+import Image from 'next/image';
 
 const GoogleLoginComponent = () => {
   const router = useRouter();
