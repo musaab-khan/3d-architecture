@@ -32,7 +32,8 @@ const SignupForm = () => {
 
     try {
       // Send data to the API
-      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/signup', {
+      // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/signup', {
+      const response = await fetch('https://threed-architecture-backend.onrender.com/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
