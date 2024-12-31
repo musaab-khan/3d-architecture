@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import Next.js router
+import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
