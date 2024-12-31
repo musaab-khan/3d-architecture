@@ -1,70 +1,53 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin
 
-const GoogleLogin = () => {
+const GoogleLoginComponent = () => {
   const router = useRouter();
 
-  // Dynamically load Google API client script
-  useEffect(() => {
-    const loadGoogleApi = () => {
-      if (typeof window !== "undefined" && !window.gapi) {
-        const script = document.createElement('script');
-        script.src = "https://apis.google.com/js/platform.js";
-        script.async = true;
-        script.onload = () => {
-          // Initialize the Google API after the script has loaded
-          window.gapi.load('auth2', () => {
-            window.gapi.auth2.init({
-              client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-            });
-          });
-        };
-        document.body.appendChild(script);
-      }
-    };
+  // Handle successful login
+  const handleLoginSuccess = (response) => {
+    const { credential } = response;  // This is the Google token ID
 
-    loadGoogleApi();
-  }, []); // Empty dependency array ensures this runs once on component mount
-
-  const handleGoogleLogin = async () => {
-    const auth2 = window.gapi.auth2.getAuthInstance();
-    try {
-      const googleUser = await auth2.signIn();
-      const id_token = googleUser.getAuthResponse().id_token;
-
-      // Send the ID token to your backend for verification
-      const res = await fetch('http://localhost:5000/auth/google/callback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id_token }),
+    // Send the tokenId to your backend to verify the user
+    fetch('http://localhost:5000/auth/google-login', { // Adjust to your backend API URL
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tokenId: credential }), // Send the token to backend
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Login successful:', data);
+        // Save the JWT token to localStorage (or cookies) for further use
+        localStorage.setItem('authToken', data.token);
+        // Redirect the user to the dashboard or any other page
+        router.push('/dashboard');
+      })
+      .catch((error) => {
+        console.error('Login failed:', error);
       });
+  };
 
-      const data = await res.json();
-      if (res.ok) {
-        // Save the JWT token in local storage
-        localStorage.setItem('token', data.token);
-        router.push('/dashboard'); // Redirect to the dashboard (or wherever you want)
-      } else {
-        console.error('Google login failed', data);
-      }
-    } catch (error) {
-      console.error('Error during Google login:', error);
-    }
+  // Handle failed login attempt
+  const handleLoginFailure = (error) => {
+    console.error('Login Failed:', error);
   };
 
   return (
-    <button
-      className='flex bg-white rounded-xl text-black w-[70vw] md:w-[30vw] p-2 md:p-4 items-center justify-center relative'
-      onClick={handleGoogleLogin}
-    >
-      <Image src='/assets/google-icon.svg' alt='' width={20} height={20} className='absolute left-4' />
-      <span className='text-lg 2xl:text-xl'>Continue with Google</span>
-    </button>
+    <div className="flex justify-center items-center">
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}  // Success callback
+        onError={handleLoginFailure}    // Error callback
+        useOneTap  // Optional: enables one-tap login
+        theme="filled_blue"
+        size="large"
+        shape="circle"
+      />
+    </div>
   );
 };
 
-export default GoogleLogin;
+export default GoogleLoginComponent;

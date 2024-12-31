@@ -12,10 +12,11 @@ const page = () => {
         <div className='flex flex-col md:flex-row justify-evenly w-screen items-center'>
             <SignupForm></SignupForm>
             <p>OR</p>
-            <button className='flex bg-white rounded-xl text-black w-[70vw] md:w-[30vw] p-2 md:p-4 items-center justify-center relative'>
+            {/* <button className='flex bg-white rounded-xl text-black w-[70vw] md:w-[30vw] p-2 md:p-4 items-center justify-center relative'>
                 <Image src='/assets/google-icon.svg' alt='' width={20} height={20} className='absolute left-4'/>
                 <p className='text-lg 2xl:text-xl'>Contine with Google</p>
-            </button>
+            </button> */}
+            <GoogleLogin></GoogleLogin>
         </div>
     </div>
   )

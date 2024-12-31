@@ -32,7 +32,7 @@ const SignupForm = () => {
 
     try {
       // Send data to the API
-      const response = await fetch('http://localhost:5000/auth/signup', {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
