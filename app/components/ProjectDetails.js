@@ -10,12 +10,12 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
   const [projectName, setProjectName] = useState('');
   const [dimensions, setDimensions] = useState({ width: '', height: '' });
   const [selectedImage, setSelectedImage] = useState(null); // Track selected image
-  const [loading, setLoading] = useState(false); // Track loading state for the submission
+//   const [loading, setLoading] = useState(false); // Track loading state for the submission
 
-  const handleNewProject = (e) => {
-    e.preventDefault();
-    router.push('/project'); // Navigate to /project
-  };
+//   const handleNewProject = (e) => {
+//     e.preventDefault();
+//     router.push('/project'); // Navigate to /project
+//   };
 
   const handleContinueClick = () => {
     if (step < 3) setStep(step + 1);
@@ -77,7 +77,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
       return;
     }
 
-    setLoading(true); // Set loading state to true
+    // setLoading(true); // Set loading state to true
 
     try {
       // Send data to the API
@@ -100,7 +100,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
     } catch (error) {
       console.error('Error creating project:', error);
     } finally {
-      setLoading(false); // Reset loading state
+    //   setLoading(false); // Reset loading state
     }
   };
 
@@ -110,7 +110,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
         <div className='w-[40%] h-[80%]'>
           {/* Form for Step 1 */}
           <div className={`${step === 1 ? 'flex' : 'hidden'} flex-col h-full justify-between`}>
-            <h2 className='text-[2.125rem]'>Lets start with your project's basics</h2>
+            <h2 className='text-[2.125rem]'>Lets start with your project&apos;s basics</h2>
             <input
               type="text"
               placeholder='Enter your project name'
