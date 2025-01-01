@@ -1,14 +1,23 @@
 'use client'
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import Image from 'next/image'
 import Search from '../components/search-icon.js'
 import AddPropertyIcon from '../components/add-propert-icon.js'
 import CursorIcon from '../components/cursor-icon.js'
-import {useRouter} from 'next/navigation'
+import {useRouter,useSearchParams} from 'next/navigation'
 
 const Page = () => {
 
     const router = useRouter(); // Initialize the router
+    const searchParams = useSearchParams(); // Use search params for App Router
+    const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
+
+    useEffect(() => {
+        if (imgUrl) {
+            console.log('Image URL:', imgUrl);
+        }
+    }, [imgUrl]); // Only run when imgUrl changes
+
         
     const handleGoBack = (e) => {
       e.preventDefault();
@@ -75,7 +84,11 @@ const Page = () => {
                 </div>
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
                     <div className={`${(step==3&&cursorOptions)?'border-2':""} relative w-[40vh] h-[40vh] z-[10]`} onClick={()=>{setCursorOptions(!cursorOptions);}}>
-                        <Image src='/assets/model.png' alt='' fill></Image>
+                        {imgUrl ? (
+                            <img src={imgUrl} alt='Selected Asset' width={400} height={400} />
+                        ) : (
+                            <p>No image selected</p>
+                        )}
                     </div>
                 </div>
                 {(step==3 && cursorOptions==true) &&
