@@ -1,56 +1,83 @@
-'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { GoogleLogin } from '@react-oauth/google'; // Import from @react-oauth/google
+'use client'
+import React, { useEffect } from 'react';
+import * as THREE from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-const GoogleLoginComponent = () => {
-  const router = useRouter();
+function ThreeViewer() {
+  useEffect(() => {
+    // Create scene, camera, and renderer
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x5facff);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-  // Callback function to handle successful login
-  const handleLoginSuccess = (response) => {
-    const { credential } = response; // This is the Google token ID
+    // Load the OBJ model
+    const loader = new OBJLoader();
+    const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471'; // Replace this with the correct path
 
-    // Send the tokenId to your backend
-    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+'auth/google-login', { // Change this URL to your backend API URL
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    loader.load(
+      modelUrl,
+      (object) => {
+        scene.add(object); // Add the loaded object to the scene
+
+        // Center the model
+        const box = new THREE.Box3().setFromObject(object);
+        const center = box.getCenter(new THREE.Vector3());
+        object.position.sub(center); // Move the model to the origin
+
+        // Scale the model to fit the screen
+        const size = box.getSize(new THREE.Vector3()).length();
+        camera.position.z = size * 2; // Adjust camera distance based on model size
       },
-      body: JSON.stringify({ tokenId: credential }), // Pass the token to the backend
-    })
-      .then(res => res.json())
-      .then(data => {
-        // Handle successful authentication
-        console.log('Login successful:', data);
+      undefined,
+      (error) => console.error('Error loading model:', error)
+    );
 
-        // Store the JWT token in localStorage (or cookies, as per your app's design)
-        localStorage.setItem('authToken', data.token);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft ambient light
+    scene.add(ambientLight);
 
-        // Redirect the user after successful login (optional)
-        router.push('/home');
-      })
-      .catch((error) => {
-        console.error('Login failed:', error);
-      });
-  };
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Directional light
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
 
-  // Callback function to handle failed login
-  const handleLoginFailure = (error) => {
-    console.error('Login Failed:', error);
-  };
+    // Add OrbitControls for interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // Smooth movement
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false; // Disable panning outside the plane
+    controls.minDistance = 1; // Minimum zoom
+    controls.maxDistance = 100; // Maximum zoom
+    controls.rotateSpeed = 0.7; // Rotation speed
+    controls.zoomSpeed = 1.2; // Zoom speed
+    controls.panSpeed = 0.8; // Pan speed
 
-  return (
-    <div className="flex justify-center items-center">
-      <GoogleLogin
-        onSuccess={handleLoginSuccess}
-        onError={handleLoginFailure}
-        useOneTap // optional: enables one-tap login
-        theme="filled_blue"
-        size="large"
-        shape="circle"
-      />
-    </div>
-  );
-};
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update(); // Update controls
+      renderer.render(scene, camera);
+    };
 
-export default GoogleLoginComponent;
+    animate();
+
+    // Resize handling
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    // Clean up
+    return () => {
+      document.body.removeChild(renderer.domElement);
+    };
+  }, []);
+
+  return null;
+}
+
+export default ThreeViewer;
