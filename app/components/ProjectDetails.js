@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import StaticViewer from './StaticViewer';
+// import StaticViewer from './StaticViewer';
 
 const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
   const router = useRouter(); // Initialize the router
@@ -211,15 +211,15 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
                         className="cursor-pointer"
                         onClick={() => setSelectedImage(result.imageUrl)} // Set selected image URL
                       >
-                        {/* <img
+                        <img
                           width={150}
                           height={150}
                           alt={result.name}
                           src={result.imageUrl || '/default-image-placeholder.png'}
-                        /> */}
-                        <div className='w-[150px] h-[150px]'>
+                        />
+                        {/* <div className='w-[150px] h-[150px]'>
                           <StaticViewer></StaticViewer>
-                        </div>
+                        </div> */}
                       </div>
                     ))
                   ) : (
