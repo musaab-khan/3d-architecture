@@ -1,0 +1,93 @@
+'use client'
+import  React,{ useEffect } from 'react';
+import * as THREE from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+function ThreeViewer() {
+  useEffect(() => {
+    // Create scene, camera, and renderer
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x5facff);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Load the OBJ model
+    const loader = new OBJLoader();
+    // const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471'; // Replace this with the correct path
+    const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fbig.glb?alt=media&token=b7eb6025-97a6-458d-8252-4ba9b48204fa'; // Replace this with the correct path
+
+    loader.load(
+      modelUrl,
+      (object) => {
+        scene.add(object); // Add the loaded object to the scene
+
+        // Center the model
+        const box = new THREE.Box3().setFromObject(object);
+        const center = box.getCenter(new THREE.Vector3());
+        object.position.sub(center); // Move the model to the origin
+
+        // Scale the model to fit the screen
+        const size = box.getSize(new THREE.Vector3()).length();
+        camera.position.z = size * 4; // Adjust camera distance based on model size
+      },
+      undefined,
+      (error) => console.error('Error loading model:', error)
+    );
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft ambient light
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Directional light
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
+
+    // Add OrbitControls for interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // Smooth movement
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false; // Disable panning outside the plane
+    controls.minDistance = 1; // Minimum zoom
+    controls.maxDistance = 100; // Maximum zoom
+    controls.rotateSpeed = 0.7; // Rotation speed
+    controls.zoomSpeed = 1.2; // Zoom speed
+    controls.panSpeed = 0.8; // Pan speed
+
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update(); // Update controls
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Resize handling
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    // Clean up
+    return () => {
+      document.body.removeChild(renderer.domElement);
+    };
+  }, []);
+
+  return null;
+}
+
+export default ThreeViewer;
+// import React from 'react'
+
+// const page = () => {
+//   return (
+//     <div>page</div>
+//   )
+// }
+
+// export default page

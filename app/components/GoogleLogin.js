@@ -47,12 +47,12 @@ const GoogleLoginComponent = () => {
       onFailure={handleLoginFailure}
       render={(renderProps) => (
         <button
-          className='flex bg-white rounded-xl text-black w-[70%] md:w-[30%] p-2 md:p-4 items-center justify-center relative'
+          className='flex bg-white rounded-xl text-black w-[70%] md:w-[30%] p-8 md:p-4 items-center justify-center relative h-[15%]'
           onClick={renderProps.onClick} // This will trigger the Google Login popup
           disabled={renderProps.disabled} // Disable the button if the login popup is in progress
         >
           <Image
-            src='/assets/google-icon.svg'
+            src='/assets/google-iconz.svg'
             alt='Google Icon'
             width={20}
             height={20}

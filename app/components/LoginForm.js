@@ -72,20 +72,20 @@ const LoginForm = () => {
       {error && <p className="text-red-500">{error}</p>}
       <button
         type="button"
-        className="text-right hover:underline cursor-pointer w-[85%]"
+        className="text-right hover:underline cursor-pointer w-[85%] -mt-[3vh]"
         onClick={handleForgotPassword}
       >
         Forgot Password?
       </button>
       <button
         type="submit"
-        className="flex gap-2 w-[85%] justify-center rounded-xl bg-blue-600 h-[15%] items-center text-2xl 2xl:text-3xl"
+        className="flex gap-2 w-[85%] justify-center rounded-xl bg-blue-600 h-[15%] items-center text-[20px] 2xl:text-2xl"
       >
         <p>Login</p>
         <span> &#8594;</span>
       </button>
       <hr className="w-[60%]" />
-      <div className="flex gap-4">
+      <div className="flex gap-1">
         <p>New member?</p>
         <button
           type="button"

@@ -111,11 +111,11 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
         <div className='w-[40%] h-[80%]'>
           {/* Form for Step 1 */}
           <div className={`${step === 1 ? 'flex' : 'hidden'} flex-col h-full justify-between`}>
-            <h2 className='text-[2.125rem]'>Lets start with your project&apos;s basics</h2>
+            <h2 className='text-[2.125rem] text-yellow-300'>Lets start with your project&apos;s basics</h2>
             <input
               type="text"
               placeholder='Enter your project name'
-              className='focus:border-yellow-300 text-2xl bg-transparent'
+              className='outline-none text-2xl bg-transparent '
               style={{ borderBottom: '1px solid white' }}
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)} // Handle input change
@@ -125,7 +125,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
               <input
                 type="text"
                 placeholder='Width'
-                className='bg-transparent border-2 h-full rounded-2xl'
+                className='bg-transparent border-2 h-full rounded-2xl pl-2  focus:outline-yellow-300'
                 value={dimensions.width}
                 onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })}
               />
@@ -133,13 +133,13 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
               <input
                 type="text"
                 placeholder='Height'
-                className='bg-transparent border-2 h-full rounded-2xl'
+                className='bg-transparent border-2 h-full rounded-2xl pl-2 focus:outline-yellow-300'
                 value={dimensions.height}
                 onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })}
               />
             </div>
-            <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-2xl' onClick={handleContinueClick}>
-              <p>Continue</p><span> &#8594;</span>
+            <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-[20px]' onClick={handleContinueClick}>
+              <p>Start creating now</p><span> &#8594;</span>
             </button>
           </div>
 
@@ -153,7 +153,7 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
                   <input
                     type="text"
                     id='category'
-                    className='bg-transparent w-[95%]'
+                    className='bg-transparent w-[95%] outline-none'
                     value={searchQuery}
                     onChange={handleSearch}
                   />
