@@ -27,21 +27,23 @@ export default function Home() {
 
       const geometry = new THREE.PlaneGeometry(length, width);
       const material = new THREE.MeshBasicMaterial({
-        color: 0xe0e0e0,
+        color: 0xd3d3d3,
         side: THREE.DoubleSide,
       });
       const plane = new THREE.Mesh(geometry, material);
       plane.rotateX(-Math.PI / 2);
 
-      const grid = new THREE.GridHelper(Math.max(length, width), 20);
-      grid.position.y = 0.01;
+      // const grid = new THREE.GridHelper(Math.max(length, width), 20);
+      // grid.position.y = 0.01;
 
-      const planeGroup = new THREE.Group();
-      planeGroup.add(plane);
-      planeGroup.add(grid);
+      // const planeGroup = new THREE.Group();
+      // planeGroup.add(plane);
+      // planeGroup.add(grid);
 
-      sceneRef.current.add(planeGroup);
-      planeRef.current = planeGroup;
+      // sceneRef.current.add(planeGroup);
+      sceneRef.current.add(plane);
+      // planeRef.current = planeGroup;
+      planeRef.current = plane;
       setPlaneSize({ length, width });
 
       const maxDim = Math.max(length, width);
@@ -52,6 +54,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!planeSize) {
+      // const length = parseFloat(prompt('Enter plane length:', '10'));
+      // const width = parseFloat(prompt('Enter plane width:', '10'));
       const length = parseFloat(prompt('Enter plane length:', '10'));
       const width = parseFloat(prompt('Enter plane width:', '10'));
       if (isNaN(length) || isNaN(width)) return;

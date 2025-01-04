@@ -12,12 +12,18 @@ const Page = () => {
     const router = useRouter(); // Initialize the router
     const searchParams = useSearchParams(); // Use search params for App Router
     const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
+    const projectDimsX = searchParams.get('projectDimsX'); // Get the query parameter
+    const projectDimsY = searchParams.get('projectDimsY'); // Get the query parameter
+    
+    
 
     useEffect(() => {
-        if (imgUrl) {
+        if (imgUrl,projectDimsX,projectDimsY) {
             console.log('Image URL:', imgUrl);
+            console.log(projectDimsX)
+            console.log(projectDimsY)
         }
-    }, [imgUrl]); // Only run when imgUrl changes
+    }, [imgUrl,projectDimsX,projectDimsY]); // Only run when imgUrl changes
 
         
     const handleGoBack = (e) => {
@@ -32,6 +38,7 @@ const Page = () => {
     
     function toggleOption  (option) {
         setStep(option);
+        console.log(projectDimsX,projectDimsY)
     }
   return (
     <div>
@@ -96,7 +103,8 @@ const Page = () => {
                     </div>
                 </div> */}
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl' onClick={()=>{setCursorOptions(true);}}>
-                    <Boxes></Boxes>
+                    
+                    <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes>
                 </div>
                 {(step==3 && cursorOptions==true) &&
                  <div className='flex h-full justify-start items-center flex-col gap-4 w-[4%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
