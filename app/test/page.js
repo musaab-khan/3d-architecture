@@ -1,5 +1,5 @@
 'use client'
-import  React,{ useEffect } from 'react';
+import  { useEffect } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -17,7 +17,7 @@ function ThreeViewer() {
     // Load the OBJ model
     const loader = new OBJLoader();
     // const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471'; // Replace this with the correct path
-    const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fbig.glb?alt=media&token=b7eb6025-97a6-458d-8252-4ba9b48204fa'; // Replace this with the correct path
+    const modelUrl = 'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.obj?alt=media&token=307df9f1-cc34-45a0-a439-83ceca4434fa'; // Replace this with the correct path
 
     loader.load(
       modelUrl,

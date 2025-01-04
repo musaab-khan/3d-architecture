@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Search from '../components/search-icon.js'
 import AddPropertyIcon from '../components/add-propert-icon.js'
 import CursorIcon from '../components/cursor-icon.js'
+import Boxes from '../components/Boxes.js'
 import {useRouter,useSearchParams} from 'next/navigation'
 
 const Page = () => {
@@ -82,7 +83,10 @@ const Page = () => {
                         <CursorIcon selected={step==3}></CursorIcon>
                     </div>
                 </div>
-                <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
+
+                {/* Uncomment this... this is the image that loads from sgguestion part */}
+
+                {/* <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
                     <div className={`${(step==3&&cursorOptions)?'border-2':""} relative w-[40vh] h-[40vh] z-[10]`} onClick={()=>{setCursorOptions(!cursorOptions);}}>
                         {imgUrl ? (
                             <img src={imgUrl} alt='Selected Asset' width={400} height={400} />
@@ -90,6 +94,9 @@ const Page = () => {
                             <p>No image selected</p>
                         )}
                     </div>
+                </div> */}
+                <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl' onClick={()=>{setCursorOptions(true);}}>
+                    <Boxes></Boxes>
                 </div>
                 {(step==3 && cursorOptions==true) &&
                  <div className='flex h-full justify-start items-center flex-col gap-4 w-[4%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
