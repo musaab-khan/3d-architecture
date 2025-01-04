@@ -125,7 +125,7 @@ export default function Home({planeLength,planeWidth}) {
       if (isNaN(length) || isNaN(width)) return;
 
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf0f0f0);
+      scene.background = new THREE.Color(0x353535);
       sceneRef.current = scene;
 
       const camera = new THREE.PerspectiveCamera(
