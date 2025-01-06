@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Search from '../components/search-icon.js'
 import AddPropertyIcon from '../components/add-propert-icon.js'
 import CursorIcon from '../components/cursor-icon.js'
-import Boxes from '../components/Boxes.js'
+import Home from '../components/Boxes.js'
 import {useRouter,useSearchParams} from 'next/navigation'
 
 const Page = () => {
@@ -14,16 +14,20 @@ const Page = () => {
     const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
     const projectDimsX = searchParams.get('projectDimsX'); // Get the query parameter
     const projectDimsY = searchParams.get('projectDimsY'); // Get the query parameter
-    
+    const [mode, setMode] = useState('');
+
+    const handleModeChange = (newMode) => {
+        setMode(newMode);
+      };
     
 
-    useEffect(() => {
-        if (imgUrl,projectDimsX,projectDimsY) {
-            console.log('Image URL:', imgUrl);
-            console.log(projectDimsX)
-            console.log(projectDimsY)
-        }
-    }, [imgUrl,projectDimsX,projectDimsY]); // Only run when imgUrl changes
+    // useEffect(() => {
+    //     if (imgUrl,projectDimsX,projectDimsY) {
+    //         console.log('Image URL:', imgUrl);
+    //         console.log(projectDimsX)
+    //         console.log(projectDimsY)
+    //     }
+    // }, [imgUrl,projectDimsX,projectDimsY]); // Only run when imgUrl changes
 
         
     const handleGoBack = (e) => {
@@ -38,7 +42,7 @@ const Page = () => {
     
     function toggleOption  (option) {
         setStep(option);
-        console.log(projectDimsX,projectDimsY)
+        // console.log(projectDimsX,projectDimsY)
     }
   return (
     <div>
@@ -65,7 +69,7 @@ const Page = () => {
                             <div className="flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-[#323232] scrollbar-thumb-rounded-full  scrollbar-track-[#808080]">
                                 {addAsset=='interior'&&
                                     <ul id='interior-list' className='list-none w-full flex flex-col'>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Room</li>
+                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1" onClick={() => handleModeChange('addBox')}  id='addBox'>Room</li>
                                     <li className="w-full text-center border-b-[1px] pt-2 pb-1">Window</li>
                                     <li className="w-full text-center border-b-[1px] pt-2 pb-1">Switch</li>
                                     <li className="w-full text-center border-b-[1px] pt-2 pb-1">Button</li>
@@ -91,7 +95,7 @@ const Page = () => {
                     </div>
                 </div>
 
-                {/* Uncomment this... this is the image that loads from sgguestion part */}
+                {/* ignore this... this is the image that loads from sgguestion part */}
 
                 {/* <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
                     <div className={`${(step==3&&cursorOptions)?'border-2':""} relative w-[40vh] h-[40vh] z-[10]`} onClick={()=>{setCursorOptions(!cursorOptions);}}>
@@ -104,17 +108,18 @@ const Page = () => {
                 </div> */}
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl' onClick={()=>{setCursorOptions(true);}}>
                     
-                    <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes>
+                    {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}
+                    <Home mode={mode}/>
                 </div>
                 {(step==3 && cursorOptions==true) &&
                  <div className='flex h-full justify-start items-center flex-col gap-4 w-[4%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
-                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' onClick={()=>setCursorStep(1)}>
+                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center'id='move' onClick={()=>{setCursorStep(1);handleModeChange('move');console.log('move') }}>
                         <Image src='/assets/move.png' width={25} height={25} alt='' className={`${cursorStep==1?'scale-[135%] border-[1px] border-dotted':''}`}></Image>
                     </div>
-                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' onClick={()=>setCursorStep(2)}>
+                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' id='rotate'  onClick={()=>{setCursorStep(2);handleModeChange('rotate') }}>
                         <Image src='/assets/rotate.png' width={25} height={25} alt=''  className={`${cursorStep==2?'scale-[135%] border-[1px] border-dotted':''}`}></Image>
                     </div>
-                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' onClick={()=>setCursorStep(3)}>
+                    <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' id='scale'  onClick={()=>{setCursorStep(3);handleModeChange('scale') }}>
                         <Image src='/assets/resize.png' width={25} height={25} alt='' className={`${cursorStep==3?'scale-[135%] border-[1px] border-dotted':''}`}></Image>
                     </div>
                     <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center' onClick={()=>setCursorStep(4)}>
