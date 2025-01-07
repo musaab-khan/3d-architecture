@@ -281,6 +281,7 @@
 //   );
 // }
 'use client';
+import { create } from 'domain';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -354,7 +355,15 @@ export default function Home() {
     scaleSprite.scale.set(spriteScale, spriteScale, spriteScale);
     scaleSprite.userData = { mode: 'scale' };
 
-    group.add(rotateSprite, scaleSprite);
+    const levitateSprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: createSpriteTexture('L', '#4CAF50') })
+    );
+    levitateSprite.position.set(0, offset * 1.5, 0);
+    levitateSprite.scale.set(spriteScale, spriteScale, spriteScale);
+    levitateSprite.userData = { mode: 'levitate' };
+    
+    group.add(rotateSprite, scaleSprite, levitateSprite);
+
     group.position.copy(box.position);
     
     sceneRef.current.add(group);
@@ -420,6 +429,23 @@ export default function Home() {
     handle.userData = { type: 'scale', axis };
     return handle;
   };
+  const createLevitationHandle = () => {
+    const size = 0.1;
+    const handle = new THREE.Mesh(
+        new THREE.BoxGeometry(size, size, size),
+        new THREE.MeshBasicMaterial({ color: 0x4CAF50 })
+    );
+
+    // const handle = createArrow('y',0x4CA550)
+  
+    const position = 1.5;
+    handle.position.y = position; // Correct position assignment
+
+    handle.userData = { type: 'levitate', position }; // Use position instead of undefined y
+
+    return handle;
+};
+
 
   const createTransformControls = (box, mode) => {
     if (controlsGroupRef.current) {
@@ -450,6 +476,13 @@ export default function Home() {
           createScaleHandle('z', 0x0000ff)
         );
         break;
+        case 'levitate':
+          // const arrow = createArrow('y', 0x4CAF50);
+          // arrow.scale.set(1, 2, 1);
+          // arrow.userData = { type: 'levitate', axis: 'y' }; // Add this line
+          // group.add(arrow);
+          group.add(createLevitationHandle());
+          break;
     }
 
     group.position.copy(box.position);
@@ -493,8 +526,10 @@ export default function Home() {
     
       useEffect(() => {
         if (!planeSize) {
-          const length = parseFloat(prompt('Enter plane length:', '10'));
-          const width = parseFloat(prompt('Enter plane width:', '10'));
+          // const length = parseFloat(prompt('Enter plane length:', '10'));
+          const length = 10;
+          // const width = parseFloat(prompt('Enter plane width:', '10'));
+          const width = 10;
           if (isNaN(length) || isNaN(width)) return;
     
           const scene = new THREE.Scene();
@@ -628,13 +663,65 @@ export default function Home() {
                   spritesGroupRef.current.position.copy(selectedBox.position);
                 }
               }
-            } else if (activeControl) {
-              // Handle transform controls movement
+            }
+            //  else if (activeControl) {
+            //   // Handle transform controls movement
+            //   const rect = canvasRef.current.getBoundingClientRect();
+            //   const deltaX = ((event.clientX - dragStartRef.current.x) / rect.width) * 10;
+            //   const deltaY = ((event.clientY - dragStartRef.current.y) / rect.height) * 10;
+              
+            //   if (activeControl.userData.type === 'rotate') {
+            //     const axis = activeControl.userData.axis;
+            //     const rotationSpeed = 2;
+                
+            //     if (axis === 'y') {
+            //       selectedBox.rotation.y += deltaX * rotationSpeed;
+            //       boxRotation.y = selectedBox.rotation.y;
+            //     } else if (axis === 'x') {
+            //       selectedBox.rotation.x -= deltaY * rotationSpeed;
+            //       boxRotation.x = selectedBox.rotation.x;
+            //     } else if (axis === 'z') {
+            //       selectedBox.rotation.z += deltaX * rotationSpeed;
+            //       boxRotation.z = selectedBox.rotation.z;
+            //     }
+            //     setBoxRotation({ ...boxRotation });
+            //   }
+            //   else if (activeControl.userData.type === 'scale') {
+            //     const axis = activeControl.userData.axis;
+            //     const scaleFactor = 1 + (deltaX - deltaY);
+            //     const minScale = 0.1;
+            //     const newScale = Math.max(minScale, selectedBox.scale[axis] * scaleFactor);
+                
+            //     selectedBox.scale[axis] = newScale;
+            //     const newDimensions = { ...boxDimensions };
+            //     newDimensions[axis] = newScale;
+            //     setBoxDimensions(newDimensions);
+                
+            //     if (axis === 'y') {
+            //       const heightDiff = (newScale - selectedBox.scale[axis]) / 2;
+            //       selectedBox.position.y += heightDiff;
+            //       controlsGroupRef.current.position.copy(selectedBox.position);
+            //     }
+            //   }
+            //   else if (activeControl.userData.type === 'translate'&&transformMode === 'levitate') {
+            //     const minHeight = selectedBox.scale.y / 2;
+            //     const maxHeight = 10; // Maximum levitation height
+            //     const newY = selectedBox.position.y - deltaY;
+            //     selectedBox.position.y = Math.max(minHeight, Math.min(maxHeight, newY));
+            //     controlsGroupRef.current.position.copy(selectedBox.position);
+            //   }
+              
+            //   dragStartRef.current = { x: event.clientX, y: event.clientY };
+            // }
+            // Inside the handleMouseMove function, replace the existing activeControl condition with this updated version:
+
+            else if (activeControl) {
               const rect = canvasRef.current.getBoundingClientRect();
               const deltaX = ((event.clientX - dragStartRef.current.x) / rect.width) * 10;
               const deltaY = ((event.clientY - dragStartRef.current.y) / rect.height) * 10;
-              
+              console.log(activeControl.userData.type)
               if (activeControl.userData.type === 'rotate') {
+                console.log('rotate')
                 const axis = activeControl.userData.axis;
                 const rotationSpeed = 2;
                 
@@ -664,6 +751,25 @@ export default function Home() {
                 if (axis === 'y') {
                   const heightDiff = (newScale - selectedBox.scale[axis]) / 2;
                   selectedBox.position.y += heightDiff;
+                  controlsGroupRef.current.position.copy(selectedBox.position);
+                  
+                
+                // Update control group position
+                if (controlsGroupRef.current) {
+                  controlsGroupRef.current.position.copy(selectedBox.position);
+                }
+                }
+              }
+              else if (activeControl.userData.type === 'levitate') {
+                const levitationSpeed = 1;
+                const minHeight = selectedBox.scale.y / 2;
+                const maxHeight = 10;
+                const newY = selectedBox.position.y - deltaY * levitationSpeed;
+                selectedBox.position.y = Math.max(minHeight, Math.min(maxHeight, newY));
+                // selectedBox.position.y = 10;
+                
+                // Update control group position
+                if (controlsGroupRef.current) {
                   controlsGroupRef.current.position.copy(selectedBox.position);
                 }
               }
@@ -708,28 +814,28 @@ export default function Home() {
         boxesRef.current.push(box);
       };
     
-      const updateBoxDimension = (dimension, delta) => {
-        if (selectedBox) {
-          const newScale = { ...boxDimensions };
-          newScale[dimension] = Math.max(0.1, newScale[dimension] + delta);
-          setBoxDimensions(newScale);
+      // const updateBoxDimension = (dimension, delta) => {
+      //   if (selectedBox) {
+      //     const newScale = { ...boxDimensions };
+      //     newScale[dimension] = Math.max(0.1, newScale[dimension] + delta);
+      //     setBoxDimensions(newScale);
           
-          selectedBox.scale[dimension] = newScale[dimension];
-          if (dimension === 'y') {
-            selectedBox.position.y = newScale[dimension] / 2;
-          }
-        }
-      };
+      //     selectedBox.scale[dimension] = newScale[dimension];
+      //     if (dimension === 'y') {
+      //       selectedBox.position.y = newScale[dimension] / 2;
+      //     }
+      //   }
+      // };
     
-      const updateBoxRotation = (axis, delta) => {
-        if (selectedBox) {
-          const newRotation = { ...boxRotation };
-          newRotation[axis] = (newRotation[axis] + delta) % (2 * Math.PI);
-          setBoxRotation(newRotation);
+      // const updateBoxRotation = (axis, delta) => {
+      //   if (selectedBox) {
+      //     const newRotation = { ...boxRotation };
+      //     newRotation[axis] = (newRotation[axis] + delta) % (2 * Math.PI);
+      //     setBoxRotation(newRotation);
           
-          selectedBox.rotation[axis] = newRotation[axis];
-        }
-      };
+      //     selectedBox.rotation[axis] = newRotation[axis];
+      //   }
+      // };
     
   return (
     <div className="relative w-full h-screen">
