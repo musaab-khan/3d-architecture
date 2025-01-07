@@ -1,10 +1,11 @@
-
 'use client';
+// import { create } from 'domain';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import SelectedDetails from '../components/SelectedDetails'
 
-export default function Home({mode}) {
+export default function Home({canvasLength,canvasHeight, width, height, selection}) {
   const mountRef = useRef(null);
   const [selectedBox, setSelectedBox] = useState(null);
   const [boxDimensions, setBoxDimensions] = useState({ x: 1, y: 1, z: 1 });
@@ -24,6 +25,13 @@ export default function Home({mode}) {
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const dragOffsetRef = useRef({ x: 0, z: 0 });
+  const [selectedBoxProperties, setSelectedBoxProperties] = useState({
+    width: 0,
+    height: 0,
+    depth: 0,
+    elevation: 0,
+    rotation: { rotX: 0, rotY: 0, rotZ: 0 },
+  });
 
   const createModeSprites = (box) => {
     if (spritesGroupRef.current) {
@@ -60,20 +68,28 @@ export default function Home({mode}) {
 
     // Only create rotate and scale sprites
     const rotateSprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: createSpriteTexture('R', '#2196F3') })
+      new THREE.SpriteMaterial({ map: createSpriteTexture('Rotate', '#2196F3') })
     );
     rotateSprite.position.set(-offset, offset, 0);
     rotateSprite.scale.set(spriteScale, spriteScale, spriteScale);
     rotateSprite.userData = { mode: 'rotate' };
 
     const scaleSprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: createSpriteTexture('S', '#F44336') })
+      new THREE.SpriteMaterial({ map: createSpriteTexture('Scale', '#F44336') })
     );
     scaleSprite.position.set(offset, offset, 0);
     scaleSprite.scale.set(spriteScale, spriteScale, spriteScale);
     scaleSprite.userData = { mode: 'scale' };
 
-    group.add(rotateSprite, scaleSprite);
+    const levitateSprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: createSpriteTexture('Levitation', '#4CAF50') })
+    );
+    levitateSprite.position.set(0, offset * 1.5, 0);
+    levitateSprite.scale.set(spriteScale, spriteScale, spriteScale);
+    levitateSprite.userData = { mode: 'levitate' };
+    
+    group.add(rotateSprite, scaleSprite, levitateSprite);
+
     group.position.copy(box.position);
     
     sceneRef.current.add(group);
@@ -139,6 +155,20 @@ export default function Home({mode}) {
     handle.userData = { type: 'scale', axis };
     return handle;
   };
+  const createLevitationHandle = () => {
+    const size = 0.1;
+    const handle = new THREE.Mesh(
+        new THREE.BoxGeometry(size, size, size),
+        new THREE.MeshBasicMaterial({ color: 0x4CAF50 })
+    );
+    const position = 1.5;
+    handle.position.y = position; // Correct position assignment
+
+    handle.userData = { type: 'levitate', position }; // Use position instead of undefined y
+
+    return handle;
+};
+
 
   const createTransformControls = (box, mode) => {
     if (controlsGroupRef.current) {
@@ -169,6 +199,9 @@ export default function Home({mode}) {
           createScaleHandle('z', 0x0000ff)
         );
         break;
+        case 'levitate':
+          group.add(createLevitationHandle());
+          break;
     }
 
     group.position.copy(box.position);
@@ -212,8 +245,10 @@ export default function Home({mode}) {
     
       useEffect(() => {
         if (!planeSize) {
-          const length = parseFloat(prompt('Enter plane length:', '10'));
-          const width = parseFloat(prompt('Enter plane width:', '10'));
+          // const length = parseFloat(prompt('Enter plane length:', '10'));
+          const length = 10;
+          // const width = parseFloat(prompt('Enter plane width:', '10'));
+          const width = 10;
           if (isNaN(length) || isNaN(width)) return;
     
           const scene = new THREE.Scene();
@@ -223,7 +258,7 @@ export default function Home({mode}) {
           const camera = new THREE.PerspectiveCamera(
             75,
             // window.innerWidth / window.innerHeight,
-            500/500,
+            canvasLength / canvasHeight,
             0.1,
             1000
           );
@@ -231,7 +266,7 @@ export default function Home({mode}) {
     
           const renderer = new THREE.WebGLRenderer({ antialias: true });
           // renderer.setSize(window.innerWidth, window.innerHeight);
-          renderer.setSize(500, 500);
+          renderer.setSize(canvasLength, canvasHeight);
           mountRef.current.appendChild(renderer.domElement);
           canvasRef.current = renderer.domElement;
           rendererRef.current = renderer;
@@ -258,6 +293,7 @@ export default function Home({mode}) {
         animate();
       }, [planeSize]);
     
+      
 
       useEffect(() => {
         if (!canvasRef.current) return;
@@ -285,13 +321,34 @@ export default function Home({mode}) {
           const intersects = getIntersection(event);
           if (intersects.length > 0) {
             const object = intersects[0].object;
-            
             if (boxesRef.current.includes(object)) {
-              setSelectedBox(object);
+              
+                setSelectedBox(object);
+
+                const { width, height, depth } = object.geometry.parameters;
+
+      // Get rotation angles (in radians)
+      const { x: rotX, y: rotY, z: rotZ } = object.rotation;
+
+      // Get elevation (position on Y-axis)
+      const elevation = object.position.y;
+
+      // Create an object with all the data
+      const boxProperties = {
+        width,
+        height,
+        depth,
+        elevation,
+        rotation: { rotX, rotY, rotZ },
+      };
+
+      // Store this data in a state (e.g., selectedBoxProperties)
+      setSelectedBoxProperties(boxProperties);
+
+
               
               // If no transform mode is active, prepare for dragging
               if (!transformMode) {
-              // if (!transformMode &&mode=='move') {
                 isDraggingRef.current = true;
                 const intersectionPoint = intersects[0].point;
                 dragOffsetRef.current = {
@@ -350,13 +407,14 @@ export default function Home({mode}) {
                   spritesGroupRef.current.position.copy(selectedBox.position);
                 }
               }
-            } else if (activeControl) {
-              // Handle transform controls movement
+            }
+            else if (activeControl) {
               const rect = canvasRef.current.getBoundingClientRect();
               const deltaX = ((event.clientX - dragStartRef.current.x) / rect.width) * 10;
               const deltaY = ((event.clientY - dragStartRef.current.y) / rect.height) * 10;
               
               if (activeControl.userData.type === 'rotate') {
+                console.log('rotate')
                 const axis = activeControl.userData.axis;
                 const rotationSpeed = 2;
                 
@@ -387,6 +445,23 @@ export default function Home({mode}) {
                   const heightDiff = (newScale - selectedBox.scale[axis]) / 2;
                   selectedBox.position.y += heightDiff;
                   controlsGroupRef.current.position.copy(selectedBox.position);
+                  
+                
+                // Update control group position
+                if (controlsGroupRef.current) {
+                  controlsGroupRef.current.position.copy(selectedBox.position);
+                }
+                }
+              }
+              else if (activeControl.userData.type === 'levitate') {
+                const levitationSpeed = 1;
+                const minHeight = selectedBox.scale.y / 2;
+                const maxHeight = 10;
+                const newY = selectedBox.position.y - deltaY * levitationSpeed;
+                selectedBox.position.y = Math.max(minHeight, Math.min(maxHeight, newY));
+
+                if (controlsGroupRef.current) {
+                  controlsGroupRef.current.position.copy(selectedBox.position);
                 }
               }
               
@@ -412,7 +487,6 @@ export default function Home({mode}) {
         };
       }, [selectedBox, activeControl, transformMode, planeSize]);
 
-  // ... (keep the addBox, updateBoxDimension, updateBoxRotation functions the same)
   const addBox = () => {
         if (!planeSize) return;
     
@@ -430,64 +504,42 @@ export default function Home({mode}) {
         boxesRef.current.push(box);
       };
     
-      const updateBoxDimension = (dimension, delta) => {
-        if (selectedBox) {
-          const newScale = { ...boxDimensions };
-          newScale[dimension] = Math.max(0.1, newScale[dimension] + delta);
-          setBoxDimensions(newScale);
+      // const updateBoxDimension = (dimension, delta) => {
+      //   if (selectedBox) {
+      //     const newScale = { ...boxDimensions };
+      //     newScale[dimension] = Math.max(0.1, newScale[dimension] + delta);
+      //     setBoxDimensions(newScale);
           
-          selectedBox.scale[dimension] = newScale[dimension];
-          if (dimension === 'y') {
-            selectedBox.position.y = newScale[dimension] / 2;
-          }
-        }
-      };
+      //     selectedBox.scale[dimension] = newScale[dimension];
+      //     if (dimension === 'y') {
+      //       selectedBox.position.y = newScale[dimension] / 2;
+      //     }
+      //   }
+      // };
     
-      const updateBoxRotation = (axis, delta) => {
-        if (selectedBox) {
-          const newRotation = { ...boxRotation };
-          newRotation[axis] = (newRotation[axis] + delta) % (2 * Math.PI);
-          setBoxRotation(newRotation);
+      // const updateBoxRotation = (axis, delta) => {
+      //   if (selectedBox) {
+      //     const newRotation = { ...boxRotation };
+      //     newRotation[axis] = (newRotation[axis] + delta) % (2 * Math.PI);
+      //     setBoxRotation(newRotation);
           
-          selectedBox.rotation[axis] = newRotation[axis];
-        }
-      };
+      //     selectedBox.rotation[axis] = newRotation[axis];
+      //   }
+      // };
     
-      useEffect(() => {
-        switch (mode) {
-          case 'addBox':
-            console.log('addbox')
-            addBox();
-
-            break;
-          case 'move':
-            console.log('move')
-            setTransformMode('move');
-            break;
-          case 'rotate':
-            console.log('rotate')
-            setTransformMode('rotate');
-            break;
-          case 'scale':
-            console.log('scale')
-            setTransformMode('scale');
-            break;
-          default:
-            setTransformMode(null);
-            break;
-        }
-      }, [mode]);
-
   return (
-    // <div className="relative w-full h-screen">
-    <div className="relative w-[500px] h-[500px]">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className={`relative w-[${width}] h-[${height}]`}>
+      <div ref={mountRef} className="w-full h-full  flex justify-center items-center" />
       <button
         className="absolute top-4 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         onClick={addBox}
       >
         Add Box
       </button>
+      {selectedBox&&
+      <>
+      <SelectedDetails  boxProperties={selectedBoxProperties}></SelectedDetails>
+      </>}
     </div>
   );
 }

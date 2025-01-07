@@ -106,13 +106,15 @@ const Page = () => {
                         )}
                     </div>
                 </div> */}
-                <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl' onClick={()=>{setCursorOptions(true);}}>
-                    
+                <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
+                    <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}} className={`${(step===3)?"":"pointer-events-none"}`}>
+                        <Home canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step===3}/>
+
+                    </div>
                     {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}
-                    <Home mode={mode}/>
                 </div>
                 {(step==3 && cursorOptions==true) &&
-                 <div className='flex h-full justify-start items-center flex-col gap-4 w-[4%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
+                 <div className='hidden flex h-full justify-start items-center flex-col gap-4 w-[4%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
                     <div className='border-b-[1px] w-full basis-[10%] flex justify-center items-center'id='move' onClick={()=>{setCursorStep(1);handleModeChange('move');console.log('move') }}>
                         <Image src='/assets/move.png' width={25} height={25} alt='' className={`${cursorStep==1?'scale-[135%] border-[1px] border-dotted':''}`}></Image>
                     </div>

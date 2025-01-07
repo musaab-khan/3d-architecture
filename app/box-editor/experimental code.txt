@@ -1,5 +1,4 @@
-this code has logic for scaling,moving and rotation objects but via buttons (old code)
-
+this code has logic for scaling,moving and rotation objects via sprites
 
 // 'use client';
 // import { useEffect, useRef, useState } from 'react';
