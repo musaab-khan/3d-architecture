@@ -5,7 +5,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import SelectedDetails from '../components/SelectedDetails'
 
-export default function Home({canvasLength,canvasHeight, width, height, selection}) {
+export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth}) {
+  console.log("Allowed:", selection);
   const mountRef = useRef(null);
   const [selectedBox, setSelectedBox] = useState(null);
   const [boxDimensions, setBoxDimensions] = useState({ x: 1, y: 1, z: 1 });
@@ -210,45 +211,107 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
   };
 
   // ... (keep the createPlane function and first useEffect the same)
+  // const createPlane = (length, width) => {
+  //       if (sceneRef.current) {
+  //         if (planeRef.current) {
+  //           sceneRef.current.remove(planeRef.current);
+  //         }
+    
+  //         const geometry = new THREE.PlaneGeometry(length, width);
+  //         const material = new THREE.MeshBasicMaterial({
+  //           color: 0xd3d3d3,
+  //           side: THREE.DoubleSide,
+  //         });
+  //         const plane = new THREE.Mesh(geometry, material);
+  //         plane.rotateX(-Math.PI / 2);
+    
+  //         const grid = new THREE.GridHelper(Math.max(length, width), 20);
+  //         grid.position.y = 0.0001;
+    
+  //         const planeGroup = new THREE.Group();
+  //         planeGroup.add(plane);
+  //         planeGroup.add(grid);
+    
+  //         sceneRef.current.add(planeGroup);
+  //         // sceneRef.current.add(plane);
+  //         planeRef.current = planeGroup;
+  //         // planeRef.current = plane;
+  //         setPlaneSize({ length, width });
+    
+  //         const maxDim = Math.max(length, width);
+  //         cameraRef.current.position.set(maxDim, maxDim * 0.7, maxDim);
+  //         cameraRef.current.lookAt(0, 0, 0);
+  //       }
+  //     };
+
   const createPlane = (length, width) => {
-        if (sceneRef.current) {
-          if (planeRef.current) {
-            sceneRef.current.remove(planeRef.current);
-          }
-    
-          const geometry = new THREE.PlaneGeometry(length, width);
-          const material = new THREE.MeshBasicMaterial({
-            color: 0xd3d3d3,
-            side: THREE.DoubleSide,
-          });
-          const plane = new THREE.Mesh(geometry, material);
-          plane.rotateX(-Math.PI / 2);
-    
-          const grid = new THREE.GridHelper(Math.max(length, width), 20);
-          grid.position.y = 0.0001;
-    
-          const planeGroup = new THREE.Group();
-          planeGroup.add(plane);
-          planeGroup.add(grid);
-    
-          sceneRef.current.add(planeGroup);
-          // sceneRef.current.add(plane);
-          planeRef.current = planeGroup;
-          // planeRef.current = plane;
-          setPlaneSize({ length, width });
-    
-          const maxDim = Math.max(length, width);
-          cameraRef.current.position.set(maxDim, maxDim * 0.7, maxDim);
-          cameraRef.current.lookAt(0, 0, 0);
-        }
-      };
+    if (sceneRef.current) {
+      if (planeRef.current) {
+        sceneRef.current.remove(planeRef.current);
+      }
+  
+      // Create the plane
+      const geometry = new THREE.PlaneGeometry(length, width);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xe0e0e0,
+        side: THREE.DoubleSide,
+      });
+      const plane = new THREE.Mesh(geometry, material);
+      plane.rotateX(-Math.PI / 2);
+  
+      // Create a custom rectangular grid
+      const gridLines = new THREE.Group();
+      const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+      const divisionsX = 10; // Number of divisions along length
+      const divisionsZ = 10; // Number of divisions along width
+  
+      // Add lines along X-axis
+      for (let i = 0; i <= divisionsX; i++) {
+        const x = (i / divisionsX) * length - length / 2;
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(x, 0.01, -width / 2),
+          new THREE.Vector3(x, 0.01, width / 2),
+        ]);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        gridLines.add(line);
+      }
+  
+      // Add lines along Z-axis
+      for (let i = 0; i <= divisionsZ; i++) {
+        const z = (i / divisionsZ) * width - width / 2;
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-length / 2, 0.01, z),
+          new THREE.Vector3(length / 2, 0.01, z),
+        ]);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        gridLines.add(line);
+      }
+  
+      // Group the plane and grid together
+      const planeGroup = new THREE.Group();
+      planeGroup.add(plane);
+      planeGroup.add(gridLines);
+  
+      // Add the group to the scene
+      sceneRef.current.add(planeGroup);
+      planeRef.current = planeGroup;
+  
+      // Update plane size state
+      setPlaneSize({ length, width });
+  
+      // Adjust camera position to fit the plane
+      const maxDim = Math.max(length, width);
+      cameraRef.current.position.set(maxDim, maxDim * 0.7, maxDim);
+      cameraRef.current.lookAt(0, 0, 0);
+    }
+  };
     
       useEffect(() => {
         if (!planeSize) {
           // const length = parseFloat(prompt('Enter plane length:', '10'));
-          const length = 10;
+          const length = planeLength;
           // const width = parseFloat(prompt('Enter plane width:', '10'));
-          const width = 10;
+          const width = planeWidth;
           if (isNaN(length) || isNaN(width)) return;
     
           const scene = new THREE.Scene();

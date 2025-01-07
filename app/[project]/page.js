@@ -1,5 +1,5 @@
 'use client'
-import React,{useState, useEffect} from 'react'
+import React,{useState} from 'react'
 import Image from 'next/image'
 import Search from '../components/search-icon.js'
 import AddPropertyIcon from '../components/add-propert-icon.js'
@@ -11,10 +11,10 @@ const Page = () => {
 
     const router = useRouter(); // Initialize the router
     const searchParams = useSearchParams(); // Use search params for App Router
-    const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
+    // const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
     const projectDimsX = searchParams.get('projectDimsX'); // Get the query parameter
     const projectDimsY = searchParams.get('projectDimsY'); // Get the query parameter
-    const [mode, setMode] = useState('');
+    // const [mode, setMode] = useState('');
 
     const handleModeChange = (newMode) => {
         setMode(newMode);
@@ -108,7 +108,7 @@ const Page = () => {
                 </div> */}
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
                     <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}} className={`${(step===3)?"":"pointer-events-none"}`}>
-                        <Home canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step===3}/>
+                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step===3}/>
 
                     </div>
                     {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}
