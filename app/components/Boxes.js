@@ -554,10 +554,10 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       
       // Function to add object to scene
       const loader = new OBJLoader();
-      let object;
+      
       function addObject() {
         loader.load(
-          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.obj?alt=media&token=307df9f1-cc34-45a0-a439-83ceca4434fa',
+          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471',
           function (obj) {
             // Create a fixed-size box of 1x1x1
             const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -565,9 +565,20 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
               color: new THREE.Color(0x00ff00), // Green color
               transparent: true,  // Make it transparent
               opacity: 0.2,  // Set the transparency level
-              wireframe: false,  // Show a wireframe for visibility
+              wireframe: true,  // Show a wireframe for visibility
             });
             const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+            // Apply a color to the object itself (this does not affect the box)
+            const objectMaterial = new THREE.MeshStandardMaterial({
+              // color: new THREE.Color(Math.random(), Math.random(), Math.random()), // Red color for the object
+              color: new THREE.Color(0xf5f7f6), // Red color for the object
+            });
+            obj.traverse((child) => {
+              if (child.isMesh) {
+                child.material = objectMaterial;  // Apply color to the mesh
+              }
+            });
       
             // Calculate the bounding box of the object to scale it down
             const box3 = new THREE.Box3().setFromObject(obj);
@@ -579,13 +590,13 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
       
             // Position the object at the center of the box
-            obj.position.set(0, 0, 0);
+            obj.position.set(0, -0.5, 0);
       
             // Add the object as a child of the box
             box.add(obj); // This makes the object a child of the box
       
             // Position the box at the origin (if you want the box at the origin of the scene)
-            box.position.set(0, 0, 0);
+            box.position.set(0, 0.5, 0);
       
             // Add the box (with the object inside) to the scene
             sceneRef.current.add(box);
@@ -599,6 +610,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
           }
         );
       }
+      
       
       
       
@@ -652,7 +664,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
         Add Box
       </button>
       <button
-        className="absolute top-12 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="absolute top-20 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         onClick={addObject}
       >
         Add Obj
