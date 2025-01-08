@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import SelectedDetails from '../components/SelectedDetails'
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth}) {
@@ -550,6 +551,57 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
         };
       }, [selectedBox, activeControl, transformMode, planeSize]);
 
+      
+      // Function to add object to scene
+      const loader = new OBJLoader();
+      let object;
+      function addObject() {
+        loader.load(
+          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.obj?alt=media&token=307df9f1-cc34-45a0-a439-83ceca4434fa',
+          function (obj) {
+            // Create a fixed-size box of 1x1x1
+            const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const boxMaterial = new THREE.MeshBasicMaterial({
+              color: new THREE.Color(0x00ff00), // Green color
+              transparent: true,  // Make it transparent
+              opacity: 0.2,  // Set the transparency level
+              wireframe: false,  // Show a wireframe for visibility
+            });
+            const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+            // Calculate the bounding box of the object to scale it down
+            const box3 = new THREE.Box3().setFromObject(obj);
+            const objectSize = new THREE.Vector3();
+            box3.getSize(objectSize);
+      
+            // Scale the object to fit inside the 1x1x1 box
+            const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+            obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      
+            // Position the object at the center of the box
+            obj.position.set(0, 0, 0);
+      
+            // Add the object as a child of the box
+            box.add(obj); // This makes the object a child of the box
+      
+            // Position the box at the origin (if you want the box at the origin of the scene)
+            box.position.set(0, 0, 0);
+      
+            // Add the box (with the object inside) to the scene
+            sceneRef.current.add(box);
+      
+            // Push the box to the references (so you can move it later if needed)
+            boxesRef.current.push(box);
+          },
+          undefined,
+          function (error) {
+            console.error('An error happened loading the object:', error);
+          }
+        );
+      }
+      
+      
+      
   const addBox = () => {
         if (!planeSize) return;
     
@@ -598,6 +650,12 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
         onClick={addBox}
       >
         Add Box
+      </button>
+      <button
+        className="absolute top-12 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onClick={addObject}
+      >
+        Add Obj
       </button>
       {selectedBox&&
       <>
