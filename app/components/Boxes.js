@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import SelectedDetails from '../components/SelectedDetails'
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth}) {
@@ -553,13 +555,141 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
 
       
       // Function to add object to scene
+      // const loader = new OBJLoader();
+      
+      // function addObject() {
+      //   loader.load(
+      //     'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471',
+      //     function (obj) {
+      //       // Create a fixed-size box of 1x1x1
+      //       const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      //       const boxMaterial = new THREE.MeshBasicMaterial({
+      //         color: new THREE.Color(0x00ff00), // Green color
+      //         transparent: true,  // Make it transparent
+      //         opacity: 0.2,  // Set the transparency level
+      //         wireframe: true,  // Show a wireframe for visibility
+      //       });
+      //       const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+      //       // Apply a color to the object itself (this does not affect the box)
+      //       const objectMaterial = new THREE.MeshStandardMaterial({
+      //         // color: new THREE.Color(Math.random(), Math.random(), Math.random()), // Red color for the object
+      //         color: new THREE.Color(0xf5f7f6), // Red color for the object
+      //       });
+      //       obj.traverse((child) => {
+      //         if (child.isMesh) {
+      //           child.material = objectMaterial;  // Apply color to the mesh
+      //         }
+      //       });
+      
+      //       // Calculate the bounding box of the object to scale it down
+      //       const box3 = new THREE.Box3().setFromObject(obj);
+      //       const objectSize = new THREE.Vector3();
+      //       box3.getSize(objectSize);
+      
+      //       // Scale the object to fit inside the 1x1x1 box
+      //       const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+      //       obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      
+      //       // Position the object at the center of the box
+      //       obj.position.set(0, -0.5, 0);
+      
+      //       // Add the object as a child of the box
+      //       box.add(obj); // This makes the object a child of the box
+      
+      //       // Position the box at the origin (if you want the box at the origin of the scene)
+      //       box.position.set(0, 0.5, 0);
+      
+      //       // Add the box (with the object inside) to the scene
+      //       sceneRef.current.add(box);
+      
+      //       // Push the box to the references (so you can move it later if needed)
+      //       boxesRef.current.push(box);
+      //     },
+      //     undefined,
+      //     function (error) {
+      //       console.error('An error happened loading the object:', error);
+      //     }
+      //   );
+      // }
       const loader = new OBJLoader();
+      const mtlLoader = new MTLLoader();
       
       function addObject() {
+        // Load the MTL file first
+        mtlLoader.load(
+          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.mtl?alt=media&token=2a8cb102-7b69-4128-a02c-6faba8b64de6',
+          function (materials) {
+            materials.preload(); // Preload the materials to make sure they are ready
+      
+            // Now load the OBJ file with the materials
+            loader.setMaterials(materials); // Set the loaded materials for the OBJ loader
+            loader.load(
+              'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.obj?alt=media&token=307df9f1-cc34-45a0-a439-83ceca4434fa',
+              function (obj) {
+                // Create a fixed-size box of 1x1x1
+                const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+                const boxMaterial = new THREE.MeshBasicMaterial({
+                  color: new THREE.Color(0x00ff00), // Green color
+                  transparent: true,  // Make it transparent
+                  opacity: 0.2,  // Set the transparency level
+                  wireframe: true,  // Show a wireframe for visibility
+                });
+                const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+                // Traverse the object and apply materials (including textures) from the MTL file
+                obj.traverse((child) => {
+                  if (child.isMesh) {
+                    // Materials are already applied from the MTL file, no need to modify
+                  }
+                });
+      
+                // Calculate the bounding box of the object to scale it down
+                const box3 = new THREE.Box3().setFromObject(obj);
+                const objectSize = new THREE.Vector3();
+                box3.getSize(objectSize);
+      
+                // Scale the object to fit inside the 1x1x1 box
+                const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+                obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      
+                // Position the object at the center of the box
+                obj.position.set(0, -0.5, 0);
+      
+                // Add the object as a child of the box
+                box.add(obj); // This makes the object a child of the box
+      
+                // Position the box at the origin (if you want the box at the origin of the scene)
+                box.position.set(0, 0.5, 0);
+      
+                // Add the box (with the object inside) to the scene
+                sceneRef.current.add(box);
+      
+                // Push the box to the references (so you can move it later if needed)
+                boxesRef.current.push(box);
+              },
+              undefined,
+              function (error) {
+                console.error('An error happened loading the object:', error);
+              }
+            );
+          },
+          undefined,
+          function (error) {
+            console.error('An error happened loading the MTL file:', error);
+          }
+        );
+      } 
+
+
+      function addGLB() {
+        const loader = new GLTFLoader();
+      
+        // Load the GLB model from the provided Firebase URL
         loader.load(
-          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fwardrobecloset-in-low-poly.obj?alt=media&token=24b8c085-d309-457f-8fb7-5bfaa810b471',
-          function (obj) {
-            // Create a fixed-size box of 1x1x1
+          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fdeciduous_tree_with_leaves_medium-poly.glb?alt=media&token=183d89f0-d67f-4ae2-ad48-acca5d5f8da1', // Your GLB file URL
+          function (gltf) {
+            // Create a fixed-size box of 1x1x1 for scaling
             const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
             const boxMaterial = new THREE.MeshBasicMaterial({
               color: new THREE.Color(0x00ff00), // Green color
@@ -569,51 +699,52 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             });
             const box = new THREE.Mesh(boxGeometry, boxMaterial);
       
-            // Apply a color to the object itself (this does not affect the box)
-            const objectMaterial = new THREE.MeshStandardMaterial({
-              // color: new THREE.Color(Math.random(), Math.random(), Math.random()), // Red color for the object
-              color: new THREE.Color(0xf5f7f6), // Red color for the object
-            });
-            obj.traverse((child) => {
-              if (child.isMesh) {
-                child.material = objectMaterial;  // Apply color to the mesh
-              }
-            });
-      
-            // Calculate the bounding box of the object to scale it down
-            const box3 = new THREE.Box3().setFromObject(obj);
+            // Get the 3D model's bounding box
+            const box3 = new THREE.Box3().setFromObject(gltf.scene);
             const objectSize = new THREE.Vector3();
             box3.getSize(objectSize);
       
-            // Scale the object to fit inside the 1x1x1 box
+            // Scale the model to fit inside the 1x1x1 box
             const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
-            obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
       
-            // Position the object at the center of the box
-            obj.position.set(0, -0.5, 0);
+            // Position the model at the center of the box
+            gltf.scene.position.set(0, -0.5, 0);
       
-            // Add the object as a child of the box
-            box.add(obj); // This makes the object a child of the box
+            // Traverse the scene to apply transformations to each mesh
+            gltf.scene.traverse((child) => {
+              if (child.isMesh) {
+                // If the child is a mesh, we can apply further transformations (like scaling, dragging, etc.)
+                // You can add any additional code for transformations here
+              }
+            });
       
-            // Position the box at the origin (if you want the box at the origin of the scene)
+            // Add the GLB model as a child of the box
+            box.add(gltf.scene);
+      
+            // Position the box at the origin (optional, can adjust as needed)
             box.position.set(0, 0.5, 0);
       
-            // Add the box (with the object inside) to the scene
+            // Add the box (with the GLB model inside) to the scene
             sceneRef.current.add(box);
       
-            // Push the box to the references (so you can move it later if needed)
+            // Optionally, you can push it to references for future manipulations
             boxesRef.current.push(box);
           },
-          undefined,
+          // Progress callback (optional)
+          function (xhr) {
+            console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          // Error callback (optional)
           function (error) {
-            console.error('An error happened loading the object:', error);
+            console.error('An error happened loading the GLB model:', error);
           }
         );
       }
       
       
-      
-      
+
+            
   const addBox = () => {
         if (!planeSize) return;
     
@@ -666,8 +797,16 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       <button
         className="absolute top-20 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         onClick={addObject}
+        // onClick={addGLB}
       >
         Add Obj
+      </button>
+      <button
+        className="absolute top-32 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        // onClick={addObject}
+        onClick={addGLB}
+      >
+        Add GLB
       </button>
       {selectedBox&&
       <>
