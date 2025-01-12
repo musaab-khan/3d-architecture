@@ -32,7 +32,7 @@ const Page = () => {
         
     const handleGoBack = (e) => {
       e.preventDefault();
-      router.push('/home');
+      router.push('/home'); // Navigate to /login
     };
 
     const [cursorOptions,setCursorOptions]=useState(false);
@@ -61,7 +61,7 @@ const Page = () => {
                     <div onClick={()=>{toggleOption(2)}} className='border-b-[1px] w-full basis-[10%] flex justify-center items-center relative'>
                         <AddPropertyIcon selected={step==2}></AddPropertyIcon>
                         {step==2&&
-                            <div className='absolute left-full top-[-20%] flex flex-col h-[450%] pb-2 rounded-xl bg-[#5a5a5a] translate-x-5 translate-y-[-8px] z-20'>
+                            <div className='absolute left-full top-[-20%] flex flex-col h-[450%] pb-2 rounded-xl bg-[#5a5a5a] translate-x-5 translate-y-[-8px] z-10'>
                             <div className='flex border-b-2 mb-2'>
                                 <button className={`p-2 border-r-[1px] cursor-pointer px-5 ${addAsset=='interior'?' bg-[#7b7b7b]':''}`} onClick={()=>setAddAsset('interior')}>Interior</button>
                                 <button className={`p-2  cursor-pointer px-5 ${addAsset=='exterior'?' bg-[#7b7b7b]':''}`} onClick={()=>setAddAsset('exterior')}>Interior</button>
