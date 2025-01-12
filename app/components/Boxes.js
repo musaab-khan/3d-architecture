@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import SelectedDetails from '../components/SelectedDetails'
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth}) {
@@ -687,10 +688,10 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       
         // Load the GLB model from the provided Firebase URL
         loader.load(
-          'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fdeciduous_tree_with_leaves_medium-poly.glb?alt=media&token=183d89f0-d67f-4ae2-ad48-acca5d5f8da1', // Your GLB file URL
+          'https://firebasestorage.googleapis.com/v0/b/d-cro-ca37b.firebasestorage.app/o/Outdoor%2Fcars%2Fcar1.glb?alt=media&token=7ad92e62-7065-418d-85b2-fe5fa5fab815', // Your GLB file URL
           function (gltf) {
             // Create a fixed-size box of 1x1x1 for scaling
-            const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
             const boxMaterial = new THREE.MeshBasicMaterial({
               color: new THREE.Color(0x00ff00), // Green color
               transparent: true,  // Make it transparent
@@ -705,11 +706,11 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             box3.getSize(objectSize);
       
             // Scale the model to fit inside the 1x1x1 box
-            const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+            const scaleFactor = Math.min(3 / objectSize.x, 3 / objectSize.y, 3 / objectSize.z);
             gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
       
             // Position the model at the center of the box
-            gltf.scene.position.set(0, -0.5, 0);
+            gltf.scene.position.set(0, -1.5, 0);
       
             // Traverse the scene to apply transformations to each mesh
             gltf.scene.traverse((child) => {
@@ -723,7 +724,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             box.add(gltf.scene);
       
             // Position the box at the origin (optional, can adjust as needed)
-            box.position.set(0, 0.5, 0);
+            box.position.set(0, 1.5, 0);
       
             // Add the box (with the GLB model inside) to the scene
             sceneRef.current.add(box);
@@ -784,6 +785,268 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       //     selectedBox.rotation[axis] = newRotation[axis];
       //   }
       // };
+
+      const saveScene = () => {
+        if (!sceneRef.current) return;
+        
+        const sceneData = {
+          boxes: boxesRef.current.map(box => ({
+            position: {
+              x: box.position.x,
+              y: box.position.y,
+              z: box.position.z
+            },
+            rotation: {
+              x: box.rotation.x,
+              y: box.rotation.y,
+              z: box.rotation.z
+            },
+            scale: {
+              x: box.scale.x,
+              y: box.scale.y,
+              z: box.scale.z
+            },
+            // Store the type of object (box, OBJ, or GLB)
+            type: box.children.length > 0 ? 
+              (box.children[0].type === 'Group' ? 'GLB' : 'OBJ') : 
+              'BOX',
+            // Store the color for basic boxes
+            color: box.children.length === 0 ? 
+              box.material.color.getHex() : 
+              null
+          })),
+          planeSize: planeSize
+        };
+      
+        // Convert to JSON string
+        const sceneJSON = JSON.stringify(sceneData);
+        
+        // Save to localStorage
+        localStorage.setItem('savedScene', sceneJSON);
+        
+        // Optional: Allow downloading as a file
+        const blob = new Blob([sceneJSON], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'scene.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+      
+      const loadScene = async () => {
+        try {
+          // Load from localStorage
+          const savedData = localStorage.getItem('savedScene');
+          if (!savedData) return;
+          
+          const sceneData = JSON.parse(savedData);
+          
+          // Clear existing boxes
+          boxesRef.current.forEach(box => {
+            sceneRef.current.remove(box);
+          });
+          boxesRef.current = [];
+          
+          // Recreate each box
+          for (const boxData of sceneData.boxes) {
+            let box;
+            
+            if (boxData.type === 'BOX') {
+              // Create basic box
+              const geometry = new THREE.BoxGeometry(1, 1, 1);
+              const material = new THREE.MeshPhongMaterial({
+                color: boxData.color
+              });
+              box = new THREE.Mesh(geometry, material);
+            } 
+            else if (boxData.type === 'OBJ') {
+              // Recreate OBJ
+              await new Promise((resolve) => {
+                const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+                const boxMaterial = new THREE.MeshBasicMaterial({
+                  color: 0x00ff00,
+                  transparent: true,
+                  opacity: 0.2,
+                  wireframe: true,
+                });
+                box = new THREE.Mesh(boxGeometry, boxMaterial);
+                
+                mtlLoader.load(
+                  'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.mtl?alt=media&token=2a8cb102-7b69-4128-a02c-6faba8b64de6',
+                  (materials) => {
+                    materials.preload();
+                    loader.setMaterials(materials);
+                    loader.load(
+                      'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2FLowpoly_tree_sample.obj?alt=media&token=307df9f1-cc34-45a0-a439-83ceca4434fa',
+                      (obj) => {
+                        const box3 = new THREE.Box3().setFromObject(obj);
+                        const objectSize = new THREE.Vector3();
+                        box3.getSize(objectSize);
+                        const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+                        obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                        obj.position.set(0, -0.5, 0);
+                        box.add(obj);
+                        resolve();
+                      }
+                    );
+                  }
+                );
+              });
+            }
+            else if (boxData.type === 'GLB') {
+              // Recreate GLB
+              await new Promise((resolve) => {
+                const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+                const boxMaterial = new THREE.MeshBasicMaterial({
+                  color: 0x00ff00,
+                  transparent: true,
+                  opacity: 0.2,
+                  wireframe: true,
+                });
+                box = new THREE.Mesh(boxGeometry, boxMaterial);
+                
+                const gltfLoader = new GLTFLoader();
+                gltfLoader.load(
+                  'https://firebasestorage.googleapis.com/v0/b/siwa-genuine-parts.appspot.com/o/3DModels%2Fdeciduous_tree_with_leaves_medium-poly.glb?alt=media&token=183d89f0-d67f-4ae2-ad48-acca5d5f8da1',
+                  (gltf) => {
+                    const box3 = new THREE.Box3().setFromObject(gltf.scene);
+                    const objectSize = new THREE.Vector3();
+                    box3.getSize(objectSize);
+                    const scaleFactor = Math.min(3 / objectSize.x, 3 / objectSize.y, 3 / objectSize.z);
+                    gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                    gltf.scene.position.set(0, -1.5, 0);
+                    box.add(gltf.scene);
+                    resolve();
+                  }
+                );
+              });
+            }
+      
+            // Apply saved transforms
+            box.position.set(boxData.position.x, boxData.position.y, boxData.position.z);
+            box.rotation.set(boxData.rotation.x, boxData.rotation.y, boxData.rotation.z);
+            box.scale.set(boxData.scale.x, boxData.scale.y, boxData.scale.z);
+            
+            sceneRef.current.add(box);
+            boxesRef.current.push(box);
+          }
+        } catch (error) {
+          console.error('Error loading scene:', error);
+        }
+      };
+
+
+      const exportSceneToGLB = () => {
+        if (!sceneRef.current) return;
+      
+        try {
+          // Create a new group to hold all meshes
+          const exportGroup = new THREE.Group();
+          
+          // Add all boxes and their children to the export group
+          boxesRef.current.forEach(box => {
+            if (box.children.length > 0) {
+              // This is a container box with an OBJ/GLB inside
+              const child = box.children[0];
+              
+              // Create a new container box with the same dimensions as the original
+              const containerGeometry = new THREE.BoxGeometry(
+                box.geometry.parameters.width * box.scale.x,
+                box.geometry.parameters.height * box.scale.y,
+                box.geometry.parameters.depth * box.scale.z
+              );
+              const containerMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.2,
+                wireframe: true
+              });
+              const containerBox = new THREE.Mesh(containerGeometry, containerMaterial);
+              
+              // Copy the box's world position and rotation
+              containerBox.position.copy(box.position);
+              containerBox.rotation.copy(box.rotation);
+              
+              // Clone the contained model
+              const modelClone = child.clone(true);
+              
+              // Calculate the correct scale for the model within the new container
+              const box3 = new THREE.Box3().setFromObject(modelClone);
+              const modelSize = new THREE.Vector3();
+              box3.getSize(modelSize);
+              
+              // Scale the model to fit the container box
+              const containerSize = new THREE.Vector3(
+                containerGeometry.parameters.width,
+                containerGeometry.parameters.height,
+                containerGeometry.parameters.depth
+              );
+              
+              const scaleFactor = Math.min(
+                containerSize.x / modelSize.x,
+                containerSize.y / modelSize.y,
+                containerSize.z / modelSize.z
+              );
+              
+              modelClone.scale.multiplyScalar(scaleFactor);
+              
+              // Position the model correctly within the container
+              if (child.userData.type === 'GLB') {
+                modelClone.position.y = -containerSize.y / 2;
+              } else {
+                modelClone.position.y = -containerSize.y / 2;
+              }
+              
+              // Add both container and model to the export group
+              containerBox.add(modelClone);
+              exportGroup.add(containerBox);
+            } else {
+              // For simple boxes without children, just clone and add them
+              const boxClone = box.clone(true);
+              exportGroup.add(boxClone);
+            }
+          });
+      
+          // Add the ground plane if needed
+          if (planeRef.current) {
+            const planeClone = planeRef.current.clone(true);
+            exportGroup.add(planeClone);
+          }
+      
+          // Create the exporter
+          const exporter = new GLTFExporter();
+      
+          // Parse the scene
+          exporter.parse(
+            exportGroup,
+            (gltf) => {
+              // Create and download the file
+              const blob = new Blob([gltf], { type: 'application/octet-stream' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'scene.glb';
+              link.click();
+              URL.revokeObjectURL(url);
+            },
+            (error) => {
+              console.error('Error during GLB export:', error);
+            },
+            // Options for GLB export
+            {
+              binary: true,
+              includeCustomExtensions: true,
+              animations: [],
+              onlyVisible: true
+            }
+          );
+        } catch (error) {
+          console.error('Error exporting to GLB:', error);
+        }
+      };
+      
+
     
   return (
     <div className={`relative w-[${width}] h-[${height}]`}>
@@ -808,6 +1071,28 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       >
         Add GLB
       </button>
+      <button
+        className="absolute top-[11rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        // onClick={addObject}
+        onClick={saveScene}
+      >
+        Save Scene
+      </button>
+      <button
+        className="absolute top-[14rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        // onClick={addObject}
+        onClick={loadScene}
+      >
+        Load Scene
+      </button>
+      <button
+        className="absolute top-[17rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        // onClick={addObject}
+        onClick={exportSceneToGLB}
+      >
+        Export To GLB
+      </button>
+
       {selectedBox&&
       <>
       <SelectedDetails  boxProperties={selectedBoxProperties}></SelectedDetails>
