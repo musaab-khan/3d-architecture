@@ -1,5 +1,5 @@
 'use client'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Image from 'next/image'
 import Search from '../components/search-icon.js'
 import AddPropertyIcon from '../components/add-propert-icon.js'
@@ -15,6 +15,10 @@ const Page = () => {
     const projectDimsX = searchParams.get('projectDimsX'); // Get the query parameter
     const projectDimsY = searchParams.get('projectDimsY'); // Get the query parameter
     // const [mode, setMode] = useState('');
+    const [assets, setAssets] = useState([]);
+    const [indoorAssets, setIndoorAssets] = useState([]);
+    const [outdoorAssets, setOutdoorAssets] = useState([]);
+    const [selectedAssetSubcategory,setSelectedAssetSubcategory]=useState(null);
 
     const handleModeChange = (newMode) => {
         setMode(newMode);
@@ -29,7 +33,27 @@ const Page = () => {
     //     }
     // }, [imgUrl,projectDimsX,projectDimsY]); // Only run when imgUrl changes
 
-        
+    const fetchAssets = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}project/assets`);
+          const data = await response.json();
+          setAssets(data);
+    
+          // Categorize assets
+          const indoor = data.filter((asset) => asset.category.toLowerCase() === 'indoor');
+          const outdoor = data.filter((asset) => asset.category.toLowerCase() === 'outdoor');
+          setIndoorAssets(indoor);
+          setOutdoorAssets(outdoor);
+        } catch (error) {
+          console.error('Error fetching assets:', error);
+        }
+      };
+
+      const getUniqueSubcategories = (assetList) => {
+        const subcategories = assetList.map((asset) => asset.subcategory);
+        return [...new Set(subcategories)]; // Remove duplicates
+      };
+
     const handleGoBack = (e) => {
       e.preventDefault();
       router.push('/home'); // Navigate to /login
@@ -44,6 +68,12 @@ const Page = () => {
         setStep(option);
         // console.log(projectDimsX,projectDimsY)
     }
+
+    useEffect(() => {
+        if (step === 2) {
+          fetchAssets();
+        }
+      }, [step]);
   return (
     <div>
         <div className='h-screen w-screen bg-[#353535] text-white flex justify-evenly flex-col px-[2%]'>
@@ -63,29 +93,30 @@ const Page = () => {
                         {step==2&&
                             <div className='absolute left-full top-[-20%] flex flex-col h-[450%] pb-2 rounded-xl bg-[#5a5a5a] translate-x-5 translate-y-[-8px] z-10'>
                             <div className='flex border-b-2 mb-2'>
-                                <button className={`p-2 border-r-[1px] cursor-pointer px-5 ${addAsset=='interior'?' bg-[#7b7b7b]':''}`} onClick={()=>setAddAsset('interior')}>Interior</button>
-                                <button className={`p-2  cursor-pointer px-5 ${addAsset=='exterior'?' bg-[#7b7b7b]':''}`} onClick={()=>setAddAsset('exterior')}>Interior</button>
+                                <button className={`p-2 border-r-[1px] cursor-pointer px-5 ${addAsset === 'interior' ? ' bg-[#7b7b7b]' : ''}`} onClick={() => setAddAsset('interior')}>
+                                    Interior
+                                </button>
+                                <button className={`p-2 cursor-pointer px-5 ${addAsset === 'exterior' ? ' bg-[#7b7b7b]' : ''}`} onClick={() => setAddAsset('exterior')} >
+                                    Exterior
+                                </button>
                             </div>
                             <div className="flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-[#323232] scrollbar-thumb-rounded-full  scrollbar-track-[#808080]">
                                 {addAsset=='interior'&&
                                     <ul id='interior-list' className='list-none w-full flex flex-col'>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1" onClick={() => handleModeChange('addBox')}  id='addBox'>Room</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Window</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Switch</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Button</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Frame</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Pipes</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Wall</li>
-                                </ul>}
+                                       {getUniqueSubcategories(indoorAssets).map((subcategory) => (
+                                        <li key={subcategory} className="w-full text-center border-b-[1px] pt-2 pb-1 active:bg-[#ffffff30]" onClick={() => setSelectedAssetSubcategory(subcategory)}>
+                                            {subcategory}
+                                        </li>
+                                        ))}
+                                    </ul>}
                                 {addAsset=='exterior'&&
                                     <ul id='exterior-list' className='list-none w-full'>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Plant</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Patio</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Tree</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Fence</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Plant</li>
-                                    <li className="w-full text-center border-b-[1px] pt-2 pb-1">Grass</li>
-                                </ul>
+                                        {getUniqueSubcategories(outdoorAssets).map((subcategory) => (
+                                            <li key={subcategory} className="w-full text-center border-b-[1px] pt-2 pb-1" onClick={() => setSelectedAssetSubcategory(subcategory)}>
+                                                {subcategory}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 }
                             </div>
                         </div>}
@@ -107,8 +138,8 @@ const Page = () => {
                     </div>
                 </div> */}
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
-                    <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}} className={`${(step===3)?"":"pointer-events-none"}`}>
-                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step===3}/>
+                    <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}}>
+                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={700} canvasHeight={500} width={'100%'} height={'100%'} selection={step==3} assets={assets} selectedCategory={selectedAssetSubcategory}/>
 
                     </div>
                     {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}
@@ -130,7 +161,7 @@ const Page = () => {
                 </div> }
                 {step==1 &&
                     <div className='flex h-full justify-start items-center flex-col gap-4 w-[20%] px-2 bg-[#5a5a5a] rounded-xl absolute right-1'>
-                    <h1 className='pb-1 pt-2 border-b-2 w-[95%]'>Search</h1>
+                    <input className='outline-none pb-1 pt-2 border-b-2 w-[95%] bg-transparent' placeholder='Search'/>
                 </div>}
             </div>
         </div>

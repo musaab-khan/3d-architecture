@@ -1,5 +1,4 @@
 'use client';
-// import { create } from 'domain';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -8,9 +7,15 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import SelectedDetails from '../components/SelectedDetails'
+import AssetsDisplay from '../components/AssetsDisplay'
 
-export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth}) {
-  console.log("Allowed:", selection);
+export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory}) {
+  console.log('selection: ',selection)
+  const [selectionAllowed,setSelectionAllowed]=useState(selection)
+  useEffect(() => {
+    setSelectionAllowed(!selection);
+    console.log('useEffect',selectionAllowed)
+      }, [selection]);
   const mountRef = useRef(null);
   const [selectedBox, setSelectedBox] = useState(null);
   const [boxDimensions, setBoxDimensions] = useState({ x: 1, y: 1, z: 1 });
@@ -36,6 +41,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     depth: 0,
     elevation: 0,
     rotation: { rotX: 0, rotY: 0, rotZ: 0 },
+    modelURL:''
   });
 
   const createModeSprites = (box) => {
@@ -389,8 +395,9 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
           if (intersects.length > 0) {
             const object = intersects[0].object;
             if (boxesRef.current.includes(object)) {
-              
                 setSelectedBox(object);
+              
+              
 
                 const { width, height, depth } = object.geometry.parameters;
 
@@ -691,7 +698,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
           'https://firebasestorage.googleapis.com/v0/b/d-cro-ca37b.firebasestorage.app/o/Outdoor%2Fcars%2Fcar1.glb?alt=media&token=7ad92e62-7065-418d-85b2-fe5fa5fab815', // Your GLB file URL
           function (gltf) {
             // Create a fixed-size box of 1x1x1 for scaling
-            const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+            const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
             const boxMaterial = new THREE.MeshBasicMaterial({
               color: new THREE.Color(0x00ff00), // Green color
               transparent: true,  // Make it transparent
@@ -706,11 +713,11 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             box3.getSize(objectSize);
       
             // Scale the model to fit inside the 1x1x1 box
-            const scaleFactor = Math.min(3 / objectSize.x, 3 / objectSize.y, 3 / objectSize.z);
+            const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
             gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
       
             // Position the model at the center of the box
-            gltf.scene.position.set(0, -1.5, 0);
+            gltf.scene.position.set(0, -0.5, 0);
       
             // Traverse the scene to apply transformations to each mesh
             gltf.scene.traverse((child) => {
@@ -725,6 +732,65 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       
             // Position the box at the origin (optional, can adjust as needed)
             box.position.set(0, 1.5, 0);
+      
+            // Add the box (with the GLB model inside) to the scene
+            sceneRef.current.add(box);
+      
+            // Optionally, you can push it to references for future manipulations
+            boxesRef.current.push(box);
+          },
+          // Progress callback (optional)
+          function (xhr) {
+            console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          // Error callback (optional)
+          function (error) {
+            console.error('An error happened loading the GLB model:', error);
+          }
+        );
+      }
+      function addGLBURL(url) {
+        const loader = new GLTFLoader();
+      
+        // Load the GLB model from the provided Firebase URL
+        loader.load(
+          url, // Your GLB file URL
+          function (gltf) {
+            // Create a fixed-size box of 1x1x1 for scaling
+            const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const boxMaterial = new THREE.MeshBasicMaterial({
+              color: new THREE.Color(0x00ff00), // Green color
+              transparent: true,  // Make it transparent
+              opacity: 0.2,  // Set the transparency level
+              wireframe: true,  // Show a wireframe for visibility
+            });
+            const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+            // Get the 3D model's bounding box
+            const box3 = new THREE.Box3().setFromObject(gltf.scene);
+            const objectSize = new THREE.Vector3();
+            box3.getSize(objectSize);
+      
+            // Scale the model to fit inside the 1x1x1 box
+            const scaleFactor = Math.min(1 / objectSize.x, 1 / objectSize.y, 1 / objectSize.z);
+            gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      
+            // Position the model at the center of the box
+            gltf.scene.position.set(0, -0.5, 0);
+      
+            // Traverse the scene to apply transformations to each mesh
+            gltf.scene.traverse((child) => {
+              if (child.isMesh) {
+                // If the child is a mesh, we can apply further transformations (like scaling, dragging, etc.)
+                // You can add any additional code for transformations here
+              }
+            });
+      
+            // Add the GLB model as a child of the box
+            box.add(gltf.scene);
+      
+            // Position the box at the origin (optional, can adjust as needed)
+            box.position.set(0, 0.5, 0);
       
             // Add the box (with the GLB model inside) to the scene
             sceneRef.current.add(box);
@@ -897,7 +963,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             else if (boxData.type === 'GLB') {
               // Recreate GLB
               await new Promise((resolve) => {
-                const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+                const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
                 const boxMaterial = new THREE.MeshBasicMaterial({
                   color: 0x00ff00,
                   transparent: true,
@@ -915,7 +981,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
                     box3.getSize(objectSize);
                     const scaleFactor = Math.min(3 / objectSize.x, 3 / objectSize.y, 3 / objectSize.z);
                     gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-                    gltf.scene.position.set(0, -1.5, 0);
+                    gltf.scene.position.set(0, -0.5, 0);
                     box.add(gltf.scene);
                     resolve();
                   }
@@ -1049,8 +1115,8 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
 
     
   return (
-    <div className={`relative w-[${width}] h-[${height}]`}>
-      <div ref={mountRef} className="w-full h-full  flex justify-center items-center" />
+    <div className={`relative w-[${width}] h-[${height}] relative`}>
+      <div ref={mountRef} className={`${selection?'':'pointer-events-none'} w-full h-full  flex justify-center items-center`} />
       <button
         className="absolute top-4 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         onClick={addBox}
@@ -1097,6 +1163,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       <>
       <SelectedDetails  boxProperties={selectedBoxProperties}></SelectedDetails>
       </>}
+      <AssetsDisplay assets={assets} selectedAssets={selectedCategory} addAsset={addGLBURL}></AssetsDisplay>
     </div>
   );
 }
