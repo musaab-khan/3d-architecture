@@ -121,26 +121,29 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
               style={{ borderBottom: '1px solid white' }}
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)} // Handle input change
+              required
             />
             <h2 className='text-[2.125rem]'>Dimensions</h2>
             <div className='flex h-[15%] gap-8 items-center'>
               <input
-                type="text"
+                type="number"
                 placeholder='Width'
-                className='bg-transparent border-2 h-full rounded-2xl pl-2  focus:outline-yellow-300'
+                className='bg-transparent border-2 h-full rounded-2xl pl-2  focus:outline-yellow-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                 value={dimensions.width}
                 onChange={(e) => setDimensions({ ...dimensions, width: e.target.value })}
+                required
               />
               <p>&#10005;</p>
               <input
-                type="text"
+                type="number"
                 placeholder='Height'
-                className='bg-transparent border-2 h-full rounded-2xl pl-2 focus:outline-yellow-300'
+                className='bg-transparent border-2 h-full rounded-2xl pl-2 focus:outline-yellow-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                 value={dimensions.height}
                 onChange={(e) => setDimensions({ ...dimensions, height: e.target.value })}
+                required
               />
             </div>
-            <button className='flex gap-2 justify-center rounded-xl bg-[#5F5FFF] h-[15%] items-center text-[20px]' onClick={handleContinueClick}>
+            <button className={`flex gap-2 justify-center rounded-xl h-[15%] items-center text-[20px] ${(projectName&&dimensions.height&&dimensions.width)? 'bg-[#5F5FFF]':'bg-[#aeaeff]' }`} onClick={(projectName&&dimensions.height&&dimensions.width)? handleContinueClick:console.log('fill values') }>
               <p>Start creating now</p><span> &#8594;</span>
             </button>
           </div>
