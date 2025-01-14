@@ -14,6 +14,8 @@ const Page = () => {
     // const imgUrl = searchParams.get('imgUrl'); // Get the query parameter
     const projectDimsX = searchParams.get('projectDimsX'); // Get the query parameter
     const projectDimsY = searchParams.get('projectDimsY'); // Get the query parameter
+    const projectID=searchParams.get('projectID');
+    const load=searchParams.get('load');
     // const [mode, setMode] = useState('');
     const [assets, setAssets] = useState([]);
     const [indoorAssets, setIndoorAssets] = useState([]);
@@ -22,16 +24,9 @@ const Page = () => {
 
     const handleModeChange = (newMode) => {
         setMode(newMode);
+        
       };
     
-
-    // useEffect(() => {
-    //     if (imgUrl,projectDimsX,projectDimsY) {
-    //         console.log('Image URL:', imgUrl);
-    //         console.log(projectDimsX)
-    //         console.log(projectDimsY)
-    //     }
-    // }, [imgUrl,projectDimsX,projectDimsY]); // Only run when imgUrl changes
 
     const fetchAssets = async () => {
         try {
@@ -139,7 +134,7 @@ const Page = () => {
                 </div> */}
                 <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
                     <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}}>
-                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={700} canvasHeight={500} width={'100%'} height={'100%'} selection={step==3} assets={assets} selectedCategory={selectedAssetSubcategory}/>
+                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step==3} assets={assets} selectedCategory={selectedAssetSubcategory} projectID={projectID} load={load}/>
 
                     </div>
                     {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}

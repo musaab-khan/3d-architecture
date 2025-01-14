@@ -92,9 +92,11 @@ const ProjectDetails = ({ step, setStep, handleProjectDetailsClose }) => {
       });
 
       if (response.ok) {
-        console.log('Project created successfully');
+        const responseData = await response.json();
+        console.log('Project created successfully',responseData.model._id);
         // Handle success (e.g., redirect or show success message)
-        router.push(`/project?imgUrl=${encodeURIComponent(selectedImage)}&projectDimsX=${projectData.dimensions[0]}&projectDimsY=${projectData.dimensions[1]}`); // Example redirect
+        // router.push(`/project?imgUrl=${encodeURIComponent(selectedImage)}&projectDimsX=${projectData.dimensions[0]}&projectDimsY=${projectData.dimensions[1]}`); // Example redirect
+        router.push(`/project?projectID=${responseData.model._id}&projectDimsX=${projectData.dimensions[0]}&projectDimsY=${projectData.dimensions[1]}`); // Example redirect
       } else {
         console.error('Failed to create project');
       }

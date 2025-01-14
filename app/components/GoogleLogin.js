@@ -25,7 +25,7 @@ const GoogleLoginComponent = () => {
         console.log('Login successful:', data);
 
         // Store the JWT token in localStorage (or cookies, as per your app's design)
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('token', data.token);
 
         // Redirect the user after successful login (optional)
         router.push('/home');
