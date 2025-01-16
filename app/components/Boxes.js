@@ -92,13 +92,20 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     scaleSprite.userData = { mode: 'scale' };
 
     const levitateSprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: createSpriteTexture('Levitation', '#4CAF50') })
+      new THREE.SpriteMaterial({ map: createSpriteTexture('Levitate', '#4CAF50') })
     );
     levitateSprite.position.set(0, offset * 1.5, 0);
     levitateSprite.scale.set(spriteScale, spriteScale, spriteScale);
     levitateSprite.userData = { mode: 'levitate' };
+
+    const deleteSprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: createSpriteTexture('Delete', '#FF0000') })
+    );
+    deleteSprite.position.set(0, offset * 2.2, 0);
+    deleteSprite.scale.set(spriteScale, spriteScale, spriteScale);
+    deleteSprite.userData = { mode: 'delete' };
     
-    group.add(rotateSprite, scaleSprite, levitateSprite);
+    group.add(rotateSprite, scaleSprite, levitateSprite, deleteSprite);
 
     group.position.copy(box.position);
     
@@ -403,8 +410,6 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             if (boxesRef.current.includes(object)) {
                 setSelectedBox(object);
               
-              
-
                 const { width, height, depth } = object.geometry.parameters;
 
       // Get rotation angles (in radians)
@@ -446,9 +451,34 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
               createModeSprites(object);
             } 
             else if (object.material instanceof THREE.SpriteMaterial) {
-              setTransformMode(object.userData.mode);
-              sceneRef.current.remove(spritesGroupRef.current);
-              createTransformControls(selectedBox, object.userData.mode);
+              if (object.userData.mode === 'delete') {
+                // Remove the box from the scene
+                sceneRef.current.remove(selectedBox);
+                
+                // Remove from boxes array
+                boxesRef.current = boxesRef.current.filter(box => box !== selectedBox);
+                
+                // Remove sprites
+                if (spritesGroupRef.current) {
+                  sceneRef.current.remove(spritesGroupRef.current);
+                }
+                
+                // Remove transform controls if they exist
+                if (controlsGroupRef.current) {
+                  sceneRef.current.remove(controlsGroupRef.current);
+                }
+                
+                // Clear selection states
+                setSelectedBox(null);
+                setSelectedBoxProperties(null);
+                setTransformMode(null);
+                
+              } 
+              else{
+                setTransformMode(object.userData.mode);
+                sceneRef.current.remove(spritesGroupRef.current);
+                createTransformControls(selectedBox, object.userData.mode);
+              }
             }
             else if (object.userData.type) {
               isDraggingRef.current = true;
