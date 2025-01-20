@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import SelectedDetails from '../components/SelectedDetails'
 import AssetsDisplay from '../components/AssetsDisplay'
+// import { useRouter } from 'next/navigation';
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory,projectID,load}) {
   console.log(load)
@@ -750,6 +751,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       };
       
       const loadScene = async () => {
+        
           console.log('loading scene...')
         try {
           // Fetch the model JSON using GET request
@@ -766,7 +768,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       
           // Ensure modelJSON exists and parse it
           if (!responseData.model || !responseData.model.modelJSON) {
-            console.error('Model JSON is missing in the response');
+            // console.error('Model JSON is missing in the response');
             return;
           }
       
@@ -847,11 +849,10 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       
 // {commented this}
 
-      // useEffect(() => {
-      //   if (load==true && sceneRef.current) {
-      //     loadScene();
-      //   }
-      // }, [load, projectID]);
+      useEffect(() => {
+          loadScene();
+      
+      }, []);
 
 
       const exportSceneToGLB = () => {
@@ -964,6 +965,57 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       };
       
       
+
+      // const checkUnsavedChanges = async () => {
+      //   console.log("Checking for unsaved changes...");
+      //   // Get current scene JSON
+      //   const currentSceneData = {
+      //     boxes: boxesRef.current.map(box => ({
+      //       position: {
+      //         x: box.position.x,
+      //         y: box.position.y,
+      //         z: box.position.z
+      //       },
+      //       rotation: {
+      //         x: box.rotation.x,
+      //         y: box.rotation.y,
+      //         z: box.rotation.z
+      //       },
+      //       scale: {
+      //         x: box.scale.x,
+      //         y: box.scale.y,
+      //         z: box.scale.z
+      //       },
+      //       type: box.children.length > 0 ? 'GLB' : 'BOX',
+      //       color: box.children.length === 0 ? box.material.color.getHex() : null,
+      //       glbURL: box.userData.glbURL || null
+      //     })),
+      //     planeSize: planeSize
+      //   };
+    
+      //   try {
+      //     // Fetch saved scene JSON from DB
+      //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}project/get-model-json/${projectID}`);
+      //     if (!response.ok) return true;
+    
+      //     const responseData = await response.json();
+      //     if (!responseData.model || !responseData.model.modelJSON) return true;
+    
+      //     const savedSceneData = JSON.parse(responseData.model.modelJSON);
+    
+      //     // Compare the JSONs
+      //     const currentJSON = JSON.stringify(currentSceneData);
+      //     const savedJSON = JSON.stringify(savedSceneData);
+    
+      //     return currentJSON !== savedJSON;
+      //   } catch (error) {
+      //     console.error('Error checking for unsaved changes:', error);
+      //     return true;
+      //   }
+      // };
+    
+
+      
     
   return (
     <div className={` w-[${width?width:500}] h-[${height?height:500}] relative`}>
@@ -976,7 +1028,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       </button>
       
       <button
-        className="hidden absolute top-[11rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className=" absolute top-[11rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         // onClick={addObject}
         onClick={saveScene}
       >
@@ -985,7 +1037,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       <button
         className="hidden absolute top-[14rem] left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         // onClick={addObject}
-        onClick={loadScene}
+        onClick={()=>loadScene}
       >
         Load Scene
       </button>
