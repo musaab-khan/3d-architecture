@@ -1,14 +1,27 @@
 'use client'
-import React from 'react'
+import React,{useState,useLayoutEffect,useRef} from 'react'
 import VideoModal from './VideoModal'
 
 const HowItWorks = () => {
-    
+    const videoContainerRef = useRef(null); // Ref for the container div
+
+  const [containerDimensions, setContainerDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useLayoutEffect(() => {
+    // Update dimensions when the component mounts or the container is resized
+    if (videoContainerRef.current) {
+      const { width, height } = videoContainerRef.current.getBoundingClientRect();
+      setContainerDimensions({ width, height });
+    }
+  }, []); // Empty dependency array means this effect runs once on mount
 
   return (
     <div className='flex flex-col items-center h-screen text-white justify-evenly' style={{background: 'linear-gradient(90deg, #181818, #424242)'}}>
         <h2 className='font-bold text-[2.75rem]'>How it works</h2>
-        <div className="flex flex-col md:flex-row h-[70%] w-[75%] rounded-xl bg-[#222222] gap-5 justify-evenly items-center p-5">
+        <div className="flex flex-col md:flex-row h-[70vh] w-[75vw] rounded-xl bg-[#222222] gap-5 justify-evenly items-center p-5">
             <div className="flex flex-col h-[70%] justify-evenly  text-2xl">
                 <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
                     <h3>Authenticate</h3>
@@ -31,7 +44,7 @@ const HowItWorks = () => {
                     <span> &#8594;</span>
                 </div>
             </div>
-            <div className='border-2 flex items-center justify-center font-bold text-black text-2xl h-[60%] lg:h-[80%] lg:w-[70%] rounded-xl bg-slate-300 text-center'><VideoModal></VideoModal></div>
+            <div className='border-2 border-black flex items-center justify-center font-bold text-black text-2xl h-[60%] lg:h-[80%] lg:w-[70%] rounded-xl bg-slate-300 text-center'><VideoModal videoHeight={containerDimensions.height} videoWidth={containerDimensions.width}></VideoModal></div>
         </div>
     </div>
   )

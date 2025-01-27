@@ -1,11 +1,12 @@
 import React from 'react';
 
 
-const VideoModal = () => {
+const VideoModal = ({videoWidth,videoHeight}) => {
+  console.log(videoHeight,videoWidth)
   return (
             <video
-              width="800" // You can adjust this to your preferred size
-              height="450"
+              width={videoWidth} // You can adjust this to your preferred size
+              height={videoHeight}
               controls
               autoPlay
               loop
