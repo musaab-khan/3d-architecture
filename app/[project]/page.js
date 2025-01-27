@@ -78,7 +78,7 @@ const Page = () => {
                 </div>
                 <button className='underline text-lg' onClick={handleGoBack}>Back to dashboard</button>
             </div>
-            <div className="flex h-[80%] w-full justify-center p-1 cursor-pointer relative">
+            <div className="flex h-[80vh] w-full justify-center p-1 cursor-pointer relative">
                 <div className='flex justify-start items-center flex-col gap-4 px-2 bg-[#5a5a5a] rounded-xl absolute h-full left-1'>
                     <div onClick={()=>{toggleOption(1)}} className='border-b-[1px] w-full basis-[10%] flex justify-center items-center'>
                         <Search selected={step==1}></Search>
@@ -121,20 +121,9 @@ const Page = () => {
                     </div>
                 </div>
 
-                {/* ignore this... this is the image that loads from sgguestion part */}
-
-                {/* <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
-                    <div className={`${(step==3&&cursorOptions)?'border-2':""} relative w-[40vh] h-[40vh] z-[10]`} onClick={()=>{setCursorOptions(!cursorOptions);}}>
-                        {imgUrl ? (
-                            <img src={imgUrl} alt='Selected Asset' width={400} height={400} />
-                        ) : (
-                            <p>No image selected</p>
-                        )}
-                    </div>
-                </div> */}
-                <div className='flex justify-center items-center flex-col gap-4 basis-[80%] px-2 rounded-xl'>
+                <div className='flex justify-center items-center flex-col gap-4 w-[90vw] px-2 rounded-xl'>
                     <div  onClick={()=>{setCursorOptions(cursorOptions=>!cursorOptions);}}>
-                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={1000} canvasHeight={500} width={'100%'} height={'100%'} selection={step==3} assets={assets} selectedCategory={selectedAssetSubcategory} projectID={projectID} load={load}/>
+                        <Home planeLength={projectDimsX} planeWidth={projectDimsY} canvasLength={window.innerWidth*0.89} canvasHeight={window.innerHeight*0.8} width={'100%'} height={'100%'} selection={step==3} assets={assets} selectedCategory={selectedAssetSubcategory} projectID={projectID} load={load}/>
 
                     </div>
                     {/* <Boxes planeLength={projectDimsX} planeWidth={projectDimsY}></Boxes> */}

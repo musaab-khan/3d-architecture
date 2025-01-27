@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import SelectedDetails from '../components/SelectedDetails'
 import AssetsDisplay from '../components/AssetsDisplay'
+import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory,projectID}) {
@@ -18,6 +19,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
   
   const mountRef = useRef(null);
   const [selectedBox, setSelectedBox] = useState(null);
+  const [buttonMenu, setButtonMenu] = useState(false);
   const [boxDimensions, setBoxDimensions] = useState({ x: 1, y: 1, z: 1 });
   const [boxRotation, setBoxRotation] = useState({ x: 0, y: 0, z: 0 });
   const [planeSize, setPlaneSize] = useState(null);
@@ -1061,14 +1063,34 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       >
         Add Box
       </button>
-      
-      <button
-        className=" absolute top-[7rem] left-4 px-4 py-2 bg-blue-500 text-white rounded active:bg-blue-600"
+      {
+        !buttonMenu &&
+      <div className='absolute top-0 right-4 cursor-pointer' onClick={()=>setButtonMenu(true)}>
+      <Image alt='' src='/assets/three-dot-menu-icon.svg' width={30} height={30}></Image>
+      </div>
+      }
+      {
+        buttonMenu &&
+      <div className='flex flex-col  absolute top-0 right-4 gap-4 py-8 px-4 bg-[#00000030]'>
+        <button
+          className=" px-4 py-2 bg-blue-500 text-white rounded active:bg-blue-600"
+          // onClick={addObject}
+          onClick={saveScene}
+        >
+          Save Scene
+        </button>
+        <button
+        className=" px-4 py-2 bg-green-500 text-white rounded active:bg-green-600"
         // onClick={addObject}
-        onClick={saveScene}
+        onClick={exportSceneToGLB}
       >
-        Save Scene
-      </button>
+        Export To GLB
+        </button>
+        <button className='absolute top-0 right-0 mr-[5px] cursor-pointer' onClick={()=>setButtonMenu(false)}>
+          &#10006;
+        </button>
+      </div>
+      }
       <button
         className="hidden absolute top-[14rem] left-4 px-4 py-2 bg-blue-500 text-white rounded active:bg-blue-600"
         // onClick={addObject}
@@ -1076,13 +1098,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       >
         Load Scene
       </button>
-      <button
-        className=" absolute top-[10rem] left-4 px-4 py-2 bg-green-500 text-white rounded active:bg-green-600"
-        // onClick={addObject}
-        onClick={exportSceneToGLB}
-      >
-        Export To GLB
-      </button>
+      
 
       {selectedBox&&
       <>

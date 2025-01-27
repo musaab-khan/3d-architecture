@@ -9,8 +9,6 @@ const SelectedDetails = ({ boxProperties }) => {
     
         console.log("Selected Box Properties updated:", boxProperties);
     
-        // You can also perform other side effects like updating internal state,
-        // making API calls, etc., based on the updated boxProperties.
     
       }, [boxProperties]); // Dependency array, useEffect runs when boxProperties change
   return (
