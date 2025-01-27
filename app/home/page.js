@@ -93,9 +93,8 @@ const Page = () => {
                         <p className='text-xl'>Dimensions: {model.dimensions[0]} x {model.dimensions[1]}</p>
                     </div>
                 )) : (
-                    <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444] rounded-xl m-auto p-[5%]'>
-                        <p className="text-xl">No models available</p>
-                    </div>
+                    
+                    <div></div>
                 )}
             </div>
 
@@ -112,7 +111,7 @@ const Page = () => {
                         <p className='text-xl'>Dimensions: {model.dimensions[0]} x {model.dimensions[1]}</p>
                     </div>
                 )) : (
-                    <div className='w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444] rounded-xl m-auto p-[5%]'>
+                    <div className='opacity-0 w-[45vw] md:w-[20vw] h-[22vh] border-[3px] border-[#5F5FFF] bg-[#444444] rounded-xl m-auto p-[5%]'>
                         <p className="text-xl">No models available</p>
                     </div>
                 )}
