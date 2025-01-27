@@ -8,7 +8,7 @@ import SelectedDetails from '../components/SelectedDetails'
 import AssetsDisplay from '../components/AssetsDisplay'
 // import { useRouter } from 'next/navigation';
 
-export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory,projectID,load}) {
+export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory,projectID}) {
   
   const [selectionAllowed,setSelectionAllowed]=useState(selection)
   useEffect(() => {
@@ -187,6 +187,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
   // };
   
   const createScaleHandle = (axis, color, topPosition,boxW,boxL) => {
+    
     const size = 0.1;
     const baseOffset = 0.5;
     const handle = new THREE.Mesh(
@@ -194,7 +195,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
       new THREE.MeshBasicMaterial({ color })
     );
     
-    if (axis === 'x') handle.position.x = boxW+baseOffset * 2;
+    if (axis === 'x') handle.position.x = boxL+baseOffset * 2;
     if (axis === 'y') handle.position.y = topPosition + baseOffset;
     if (axis === 'z') handle.position.z = boxW+baseOffset * 2;
     
@@ -226,9 +227,8 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     const topPosition = boxHeight / 2; // Get position of top surface
     const boxWidth = box.scale.z * box.geometry.parameters.width;
     const boxW = boxWidth / 2;
-    const boxLength = box.scale.x * box.geometry.parameters.length;
+    const boxLength = box.scale.x * box.geometry.parameters.depth;
     const boxL = boxLength / 2;
-
 
     switch (mode) {
       case 'move':
