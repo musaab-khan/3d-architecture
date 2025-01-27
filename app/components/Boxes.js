@@ -150,7 +150,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
   const createRotationRing = (axis, color, topPosition) => {
     const baseOffset = 0.5;
     const radius = baseOffset * 2;
-    const tubeRadius = 0.03;
+    const tubeRadius = 0.02;
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(radius, tubeRadius, 4, 32, Math.PI * 2),
       new THREE.MeshBasicMaterial({ color })
@@ -171,22 +171,6 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     ring.userData = { type: 'rotate', axis };
     return ring;
   };
-
-  // const createScaleHandle = (axis, color) => {
-  //   const size = 0.1;
-  //   const handle = new THREE.Mesh(
-  //     new THREE.BoxGeometry(size, size, size),
-  //     new THREE.MeshBasicMaterial({ color })
-  //   );
-    
-  //   const position = 1.5;
-  //   if (axis === 'x') handle.position.x = position;
-  //   if (axis === 'y') handle.position.y = position;
-  //   if (axis === 'z') handle.position.z = position;
-    
-  //   handle.userData = { type: 'scale', axis };
-  //   return handle;
-  // };
   
   const createScaleHandle = (axis, color, topPosition,boxW,boxL) => {
     
@@ -209,7 +193,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     const baseOffset = 0.5;
     const handle = new THREE.Mesh(
       new THREE.BoxGeometry(size, size, size),
-      new THREE.MeshBasicMaterial({ color: 0x4CAF50 })
+      new THREE.MeshBasicMaterial({ color: 0x3c96ff })
     );
     
     handle.position.y = topPosition + baseOffset;
@@ -685,8 +669,8 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
             const boxMaterial = new THREE.MeshBasicMaterial({
               color: new THREE.Color(0x00ff00),
               transparent: true,
-              opacity: 0.2,
-              wireframe: true,
+              opacity: 0,
+              wireframe: false,
             });
             const box = new THREE.Mesh(boxGeometry, boxMaterial);
             
@@ -845,8 +829,8 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
                 const boxMaterial = new THREE.MeshBasicMaterial({
                   color: 0x00ff00,
                   transparent: true,
-                  opacity: 0.2,
-                  wireframe: true,
+                  opacity: 0,
+                  wireframe: false,
                 });
                 box = new THREE.Mesh(boxGeometry, boxMaterial);
       
@@ -914,8 +898,8 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
               const containerMaterial = new THREE.MeshBasicMaterial({
                 color: 0x00ff00,
                 transparent: true,
-                opacity: 0.2,
-                wireframe: true
+                opacity: 0,
+                wireframe: false
               });
               const containerBox = new THREE.Mesh(containerGeometry, containerMaterial);
               

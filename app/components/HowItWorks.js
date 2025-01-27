@@ -1,5 +1,6 @@
 'use client'
 import React,{useState,useLayoutEffect,useRef} from 'react'
+import { VIDEO_LINKS, sections } from '../videoUtils'
 import VideoModal from './VideoModal'
 
 const HowItWorks = () => {
@@ -10,41 +11,44 @@ const HowItWorks = () => {
     height: 0,
   });
 
+  const [currentVideo, setCurrentVideo] = useState('authenticate');
+
   useLayoutEffect(() => {
-    // Update dimensions when the component mounts or the container is resized
-    if (videoContainerRef.current) {
-      const { width, height } = videoContainerRef.current.getBoundingClientRect();
-      setContainerDimensions({ width, height });
-    }
-  }, []); // Empty dependency array means this effect runs once on mount
+    const updateDimensions = () => {
+        if (videoContainerRef.current) {
+            const { width, height } = videoContainerRef.current.getBoundingClientRect();
+            setContainerDimensions({ width, height });
+            console.log("how it works: ",width,height)
+        }
+    };
+
+    // Initial measurement
+    updateDimensions();
+
+    // Add resize listener
+    window.addEventListener('resize', updateDimensions);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateDimensions);
+}, []); // Empty dependency array means this effect runs once on mount
 
   return (
     <div className='flex flex-col items-center h-screen text-white justify-evenly' style={{background: 'linear-gradient(90deg, #181818, #424242)'}}>
         <h2 className='font-bold text-[2.75rem]'>How it works</h2>
         <div className="flex flex-col md:flex-row h-[70vh] w-[75vw] rounded-xl bg-[#222222] gap-5 justify-evenly items-center p-5">
             <div className="flex flex-col h-[70%] justify-evenly  text-2xl">
-                <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
-                    <h3>Authenticate</h3>
-                    <span> &#8594;</span>
-                </div>
-                <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
-                    <h3>Start a project</h3>
-                    <span> &#8594;</span>
-                </div>
-                <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
-                    <h3>Creating a model</h3>
-                    <span> &#8594;</span>
-                </div>
-                <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
-                    <h3>Exporting model</h3>
-                    <span> &#8594;</span>
-                </div>
-                <div className='flex justify-between border-b border-white hover:text-yellow-300 hover:border-yellow-300'>
-                    <h3>Buy subscription</h3>
-                    <span> &#8594;</span>
-                </div>
+            {sections.map((section) => (
+            <div
+              key={section.id}
+              className='flex justify-between border-b border-white active:text-yellow-300 active:border-yellow-300 cursor-pointer'
+              onClick={() => setCurrentVideo(section.id)}
+            >
+              <h3>{section.title}</h3>
+              <span>&#8594;</span>
             </div>
-            <div className='border-2 border-black flex items-center justify-center font-bold text-black text-2xl h-[60%] lg:h-[80%] lg:w-[70%] rounded-xl bg-slate-300 text-center'><VideoModal videoHeight={containerDimensions.height} videoWidth={containerDimensions.width}></VideoModal></div>
+          ))}
+            </div>
+            <div className='border-black flex items-center justify-center font-bold text-black text-2xl h-[60%] lg:h-[80%] lg:w-[70%] rounded-xl bg-transparent text-center' ref={videoContainerRef}><VideoModal videoHeight={containerDimensions.height} videoWidth={containerDimensions.width} videoSrc={VIDEO_LINKS[currentVideo]}></VideoModal></div>
         </div>
     </div>
   )
