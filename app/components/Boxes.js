@@ -9,7 +9,7 @@ import AssetsDisplay from '../components/AssetsDisplay'
 // import { useRouter } from 'next/navigation';
 
 export default function Home({canvasLength,canvasHeight, width, height, selection, planeLength, planeWidth,assets,selectedCategory,projectID,load}) {
-  console.log(load)
+  
   const [selectionAllowed,setSelectionAllowed]=useState(selection)
   useEffect(() => {
     setSelectionAllowed(!selection);
@@ -51,7 +51,9 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
 
     const group = new THREE.Group();
     const spriteScale = 0.5;
-    const offset = 1;
+    const boxHeight = box.scale.y * box.geometry.parameters.height;
+    const topPosition = boxHeight / 2; // Get position of top surface
+    const baseOffset = 0.5;
 
     // Create canvas for each sprite
     const createSpriteTexture = (text, color) => {
@@ -81,28 +83,28 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     const rotateSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: createSpriteTexture('Rotate', '#2196F3') })
     );
-    rotateSprite.position.set(-offset, offset, 0);
+    rotateSprite.position.set(-baseOffset, topPosition + baseOffset, 0);
     rotateSprite.scale.set(spriteScale, spriteScale, spriteScale);
     rotateSprite.userData = { mode: 'rotate' };
 
     const scaleSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: createSpriteTexture('Scale', '#F44336') })
     );
-    scaleSprite.position.set(offset, offset, 0);
+    scaleSprite.position.set(baseOffset, topPosition + baseOffset, 0);
     scaleSprite.scale.set(spriteScale, spriteScale, spriteScale);
     scaleSprite.userData = { mode: 'scale' };
 
     const levitateSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: createSpriteTexture('Levitate', '#4CAF50') })
     );
-    levitateSprite.position.set(0, offset * 1.5, 0);
+    levitateSprite.position.set(0, topPosition + baseOffset * 2, 0);
     levitateSprite.scale.set(spriteScale, spriteScale, spriteScale);
     levitateSprite.userData = { mode: 'levitate' };
 
     const deleteSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: createSpriteTexture('Delete', '#FF0000') })
     );
-    deleteSprite.position.set(0, offset * 2.2, 0);
+    deleteSprite.position.set(0, topPosition + baseOffset * 3, 0);
     deleteSprite.scale.set(spriteScale, spriteScale, spriteScale);
     deleteSprite.userData = { mode: 'delete' };
     
@@ -143,49 +145,75 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     return arrowGroup;
   };
 
-  const createRotationRing = (axis, color) => {
-    const radius = 1.2;
-    const tubeRadius = 0.02;
+  const createRotationRing = (axis, color, topPosition) => {
+    const baseOffset = 0.5;
+    const radius = baseOffset * 2;
+    const tubeRadius = 0.03;
     const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(radius, tubeRadius, 8, 32, Math.PI * 2),
+      new THREE.TorusGeometry(radius, tubeRadius, 4, 32, Math.PI * 2),
       new THREE.MeshBasicMaterial({ color })
     );
     
-    if (axis === 'x') ring.rotation.y = Math.PI / 2;
-    if (axis === 'y') ring.rotation.x = Math.PI / 2;
+    if (axis === 'x') {
+      ring.rotation.y = Math.PI / 2;
+      ring.position.y = topPosition + baseOffset+0.5;
+    }
+    if (axis === 'y') {
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = topPosition + baseOffset+0.5;
+    }
+    if (axis === 'z') {
+      ring.position.y = topPosition + baseOffset+0.5;
+    }
     
     ring.userData = { type: 'rotate', axis };
     return ring;
   };
 
-  const createScaleHandle = (axis, color) => {
+  // const createScaleHandle = (axis, color) => {
+  //   const size = 0.1;
+  //   const handle = new THREE.Mesh(
+  //     new THREE.BoxGeometry(size, size, size),
+  //     new THREE.MeshBasicMaterial({ color })
+  //   );
+    
+  //   const position = 1.5;
+  //   if (axis === 'x') handle.position.x = position;
+  //   if (axis === 'y') handle.position.y = position;
+  //   if (axis === 'z') handle.position.z = position;
+    
+  //   handle.userData = { type: 'scale', axis };
+  //   return handle;
+  // };
+  
+  const createScaleHandle = (axis, color, topPosition,boxW,boxL) => {
     const size = 0.1;
+    const baseOffset = 0.5;
     const handle = new THREE.Mesh(
       new THREE.BoxGeometry(size, size, size),
       new THREE.MeshBasicMaterial({ color })
     );
     
-    const position = 1.5;
-    if (axis === 'x') handle.position.x = position;
-    if (axis === 'y') handle.position.y = position;
-    if (axis === 'z') handle.position.z = position;
+    if (axis === 'x') handle.position.x = boxW+baseOffset * 2;
+    if (axis === 'y') handle.position.y = topPosition + baseOffset;
+    if (axis === 'z') handle.position.z = boxW+baseOffset * 2;
     
     handle.userData = { type: 'scale', axis };
     return handle;
   };
-  const createLevitationHandle = () => {
+  const createLevitationHandle = (topPosition) => {
     const size = 0.1;
+    const baseOffset = 0.5;
     const handle = new THREE.Mesh(
-        new THREE.BoxGeometry(size, size, size),
-        new THREE.MeshBasicMaterial({ color: 0x4CAF50 })
+      new THREE.BoxGeometry(size, size, size),
+      new THREE.MeshBasicMaterial({ color: 0x4CAF50 })
     );
-    const position = 1.5;
-    handle.position.y = position; // Correct position assignment
-
-    handle.userData = { type: 'levitate', position }; // Use position instead of undefined y
-
+    
+    handle.position.y = topPosition + baseOffset;
+    handle.userData = { type: 'levitate' };
+    
     return handle;
-};
+  };
 
 
   const createTransformControls = (box, mode) => {
@@ -194,7 +222,14 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
     }
 
     const group = new THREE.Group();
-    
+    const boxHeight = box.scale.y * box.geometry.parameters.height;
+    const topPosition = boxHeight / 2; // Get position of top surface
+    const boxWidth = box.scale.z * box.geometry.parameters.width;
+    const boxW = boxWidth / 2;
+    const boxLength = box.scale.x * box.geometry.parameters.length;
+    const boxL = boxLength / 2;
+
+
     switch (mode) {
       case 'move':
         group.add(
@@ -205,20 +240,20 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
         break;
       case 'rotate':
         group.add(
-          createRotationRing('x', 0xff0000),
-          createRotationRing('y', 0x00ff00),
-          createRotationRing('z', 0x0000ff)
+          createRotationRing('x', 0xff0000, topPosition),
+          createRotationRing('y', 0x00ff00, topPosition),
+          createRotationRing('z', 0x0000ff, topPosition)
         );
         break;
       case 'scale':
         group.add(
-          createScaleHandle('x', 0xff0000),
-          createScaleHandle('y', 0x00ff00),
-          createScaleHandle('z', 0x0000ff)
+          createScaleHandle('x', 0xff0000, topPosition,boxW,boxL),
+          createScaleHandle('y', 0x00ff00, topPosition,boxW,boxL),
+          createScaleHandle('z', 0x0000ff, topPosition,boxW,boxL)
         );
         break;
         case 'levitate':
-          group.add(createLevitationHandle());
+          group.add(createLevitationHandle(topPosition));
           break;
     }
 
@@ -525,7 +560,7 @@ export default function Home({canvasLength,canvasHeight, width, height, selectio
               const deltaY = ((event.clientY - dragStartRef.current.y) / rect.height) * 10;
               
               if (activeControl.userData.type === 'rotate') {
-                console.log('rotate')
+                // console.log('rotate')
                 const axis = activeControl.userData.axis;
                 const rotationSpeed = 2;
                 
