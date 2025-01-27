@@ -33,7 +33,7 @@ const AssetsDisplay = ({ assets, selectedAssets, addAsset }) => {
     }
 
     return (
-        <div className="border-2 border-black absolute pb-3 h-[80%] top-0 right-[-10%] rounded-xl">
+        <div className=" border-2 border-black absolute pb-3 h-[80%] top-0 right-[0] rounded-xl">
             <h2 className="py-2 text-xl font-semibold mb-4 uppercase text-center underline underline-offset-4 bg-black relative">
                 {selectedAssets}
                 <span
