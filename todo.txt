@@ -1,0 +1,1 @@
+disabled zoom controls in threeUtils.js
