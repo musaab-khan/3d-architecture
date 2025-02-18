@@ -54,9 +54,9 @@ const App = () => {
   
   return (
     <div className="app-container">
-      {<header className="app-header">
+      {/* {<header className="app-header">
         <h1>2D-to-3D Object Creator</h1>
-      </header>}
+      </header>} */}
       
       <ToolBar 
         selectedTool={selectedTool} 
