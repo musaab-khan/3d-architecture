@@ -36,7 +36,7 @@ const Canvas2D = ({ objects, selectedTool, onCanvasClick }) => {
       <h2>2D Canvas</h2>
       <canvas 
         ref={canvasRef} 
-        width={500} 
+        width={500}
         height={500} 
         className="canvas-2d"
         onClick={handleClick}

@@ -29,8 +29,8 @@ export const initScene = (container) => {
   controls.enableZoom=false;
   
   // Add grid helper
-  // const gridHelper = new THREE.GridHelper(10, 10);
-  // scene.add(gridHelper);
+  const gridHelper = new THREE.GridHelper(10, 10);
+  scene.add(gridHelper);
   
   // Add ambient light
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -126,6 +126,7 @@ export const renderObjects = (sceneData, objects) => {
 // };
 
 const add3DObject = (scene, object) => {
+  console.log(object);
   let mesh;
   let geometry;
   let material;
@@ -148,7 +149,7 @@ const add3DObject = (scene, object) => {
       // geometry = new THREE.BoxGeometry(object.width / 20, object.height / 20 || 2, 0.1);
       geometry = new THREE.BoxGeometry(object.width / 20, object.height / 20 || 2, object.depth / 20);
       mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(normalizedX + (object.width / 40), normalizedY, 0);
+      mesh.position.set(normalizedX + (object.width / 40), object.height/40, normalizedY);
       break;
       
     case 'ball':
@@ -158,7 +159,7 @@ const add3DObject = (scene, object) => {
       mesh.position.set(normalizedX, normalizedY, 0);
       
       // Add text decal to the sphere
-      addTextDecal(mesh, object.name);
+      // addTextDecal(mesh, object.name);
       break;
       
     case 'pyramid':
@@ -176,7 +177,7 @@ const add3DObject = (scene, object) => {
   }
   
   if (mesh) {
-    // Add mesh to scene
+    
     scene.add(mesh);
   }
 };
@@ -213,17 +214,17 @@ const createTextTexture = (text) => {
   canvas.height = 512;
 
   // Fill background with a color that provides contrast
-  context.fillStyle = '#73f0ef'; // Light blue background
+  context.fillStyle = '#73f0ef';
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   // Adjust font settings
-  context.font = 'bold 72px Arial'; // Increased font size
-  context.fillStyle = 'black'; // Change text color to black for better visibility
+  context.font = 'bold 72px Arial';
+  context.fillStyle = 'black';
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
   // Add text with stroke for better readability
-  context.strokeStyle = 'white'; // White stroke
+  context.strokeStyle = 'white';
   context.lineWidth = 6;
   context.strokeText(text, canvas.width / 2, canvas.height / 2);
   context.fillText(text, canvas.width / 2, canvas.height / 2);

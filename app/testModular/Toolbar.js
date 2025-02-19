@@ -2,8 +2,8 @@
 import React from 'react';
 
 const ToolBar = ({ selectedTool, onToolSelect }) => {
-  // const tools = ['wall', 'ball', 'pyramid'];
-  const tools = ['wall'];
+  const tools = ['wall', 'ball', 'pyramid'];
+  // const tools = ['wall'];
   
   return (
     <div className="toolbar">
