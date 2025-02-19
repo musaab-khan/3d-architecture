@@ -4,7 +4,7 @@ const ToolBar = ({ selectedTool, onToolSelect }) => {
   const tools = [
     { id: 'ball', label: 'Ball' },
     { id: 'wall', label: 'Wall' },
-    { id: 'pyramid', label: 'Pyramid' }
+    // { id: 'pyramid', label: 'Pyramid' }
   ];
 
   return (

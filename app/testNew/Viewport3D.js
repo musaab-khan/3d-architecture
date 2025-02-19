@@ -264,7 +264,7 @@ const Viewport3D = ({ objects }) => {
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
-  const controlsRef = useRef(null);
+  // const controlsRef = useRef(null);
   const objectsRef = useRef({});
 
   const createTextTexture = (text) => {
