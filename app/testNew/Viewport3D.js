@@ -264,7 +264,7 @@ const Viewport3D = ({ objects }) => {
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
-  // const controlsRef = useRef(null);
+  const controlsRef = useRef(null);
   const objectsRef = useRef({});
 
   const createTextTexture = (text) => {
@@ -294,7 +294,8 @@ const Viewport3D = ({ objects }) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
     sceneRef.current = scene;
-
+    // const gridHelper = new THREE.GridHelper(200, 20);
+    // scene.add(gridHelper);
     const camera = new THREE.PerspectiveCamera(
       75,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
@@ -311,10 +312,10 @@ const Viewport3D = ({ objects }) => {
     mountRef.current.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-     controls.enableDamping = true;
+    //  controls.enableDamping = true;
     // zoom controls disabled
   controls.enableZoom=false;
-    // controlsRef.current = controls;
+    controlsRef.current = controls;
 
     const ambientLight = new THREE.AmbientLight(0xffffff,0.5);
     scene.add(ambientLight);
@@ -353,7 +354,7 @@ const Viewport3D = ({ objects }) => {
 
     objects.forEach(object => {
       if (objectsMap[object.id]) {
-        objectsMap[object.id].position.set(object.x, 0, object.y);
+        objectsMap[object.id].position.set(object.x-250, 0, object.y-250);
         return;
       }
 
@@ -378,7 +379,7 @@ const Viewport3D = ({ objects }) => {
       }
 
       mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(object.x, object.height / 2, object.y);
+      mesh.position.set(object.x-250, object.height / 2, object.y-250);
       scene.add(mesh);
       objectsMap[object.id] = mesh;
     });

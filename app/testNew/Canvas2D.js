@@ -132,7 +132,7 @@
 
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
-import { draw2DObject } from './canvasUtils';
+import { draw2DObject } from './CanvasUtils';
 
 const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
   const [selectedObject, setSelectedObject] = useState(null);

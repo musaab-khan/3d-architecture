@@ -1,5 +1,1 @@
-disabled zoom controls in threeUtils.js
-controls dampening in threeUtils.js
-grid helper in threeUtils.js
-use the text-texture function from threeUtils it can be used in sphere but not perfect for pyramid
-add controls for moving the object in 2D canvas so that the object can be moved in 3D canvas.
+250 subtracted from the viewport3D in object creation and useEffect
