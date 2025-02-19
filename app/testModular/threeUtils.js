@@ -156,7 +156,7 @@ const add3DObject = (scene, object) => {
       material = new THREE.MeshStandardMaterial({ color: 0x73f0ec });
       geometry = new THREE.SphereGeometry(object.width / 40, 32, 32);
       mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(normalizedX, normalizedY, 0);
+      mesh.position.set(normalizedX, object.width/40, normalizedY);
       
       // Add text decal to the sphere
       // addTextDecal(mesh, object.name);

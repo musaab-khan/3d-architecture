@@ -65,7 +65,8 @@ const App = () => {
       
       <div className="viewport-container">
         <Canvas2D 
-          objects={objects} 
+          objects={objects}
+          setObjects={setObjects}
           selectedTool={selectedTool} 
           onCanvasClick={handleCanvasClick} 
         />
