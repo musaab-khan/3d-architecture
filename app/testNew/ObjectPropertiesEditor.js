@@ -20,17 +20,17 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects }) => {
     <div className="object-properties-editor p-4 border rounded-md bg-white shadow-sm">
       <h3 className="text-lg font-medium mb-2">Object Properties</h3>
       
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Name</label>
-          <input 
-            type="text" 
-            value={selectedObject.name || ''}
-            onChange={(e) => handlePropertyChange('name', e.target.value)}
-            className="border rounded p-1 text-sm"
-          />
-        </div>
-      </div>
+      {/* <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="flex flex-col">
+            <label className="text-sm text-gray-600">Name</label>
+            <input 
+                type="text" 
+                value={selectedObject.name || ''}
+                onChange={(e) => handlePropertyChange('name', e.target.value)}
+                className="border rounded p-1 text-sm"
+            />
+            </div>
+      </div> */}
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col">
