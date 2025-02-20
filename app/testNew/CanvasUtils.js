@@ -12,11 +12,20 @@ export const draw2DObject = (ctx, object) => {
     
     switch(object.type) {
       case 'wall':
+        // ctx.beginPath();
+        // ctx.moveTo(object.x - object.width/2, object.y);
+        // ctx.lineTo(object.x + object.width/2, object.y);
+        // ctx.stroke();
+
+        ctx.save();
+        ctx.translate(object.x, object.y);
+        ctx.rotate(object.rotateY*Math.PI/180); // Assuming rotateY is in radians
         ctx.beginPath();
-        ctx.moveTo(object.x - object.width/2, object.y);
-        ctx.lineTo(object.x + object.width/2, object.y);
+        ctx.moveTo(-object.width/2, 0);
+        ctx.lineTo(object.width/2, 0);
         ctx.stroke();
-        // ctx.rotate(object.rotateY * Math.PI / 180);
+        ctx.restore();
+
         
         //square
         // {ctx.beginPath();
