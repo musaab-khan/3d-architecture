@@ -12,11 +12,6 @@ export const draw2DObject = (ctx, object) => {
     
     switch(object.type) {
       case 'wall':
-        // ctx.beginPath();
-        // ctx.moveTo(object.x - object.width/2, object.y);
-        // ctx.lineTo(object.x + object.width/2, object.y);
-        // ctx.stroke();
-
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotateY*Math.PI/180); // Assuming rotateY is in radians
@@ -25,20 +20,18 @@ export const draw2DObject = (ctx, object) => {
         ctx.lineTo(object.width/2, 0);
         ctx.stroke();
         ctx.restore();
-
-        
-        //square
-        // {ctx.beginPath();
-        // ctx.moveTo(object.x - object.width/2, object.y - object.height/2);
-        // ctx.lineTo(object.x + object.width/2, object.y - object.height/2);
-        // ctx.moveTo(object.x + object.width/2, object.y - object.height/2);
-        // ctx.lineTo(object.x + object.width/2, object.y + object.height/2);
-        // ctx.moveTo(object.x + object.width/2, object.y + object.height/2);
-        // ctx.lineTo(object.x - object.width/2, object.y+ object.height/2);
-        // ctx.moveTo(object.x - object.width/2, object.y + object.height/2);
-        // ctx.lineTo(object.x - object.width/2, object.y - object.height/2);
-        // ctx.stroke();}
         break;
+
+      case 'box':
+        ctx.save();
+        ctx.translate(object.x, object.y);
+        ctx.rotate(object.rotateY*Math.PI/180);
+        ctx.beginPath();
+        ctx.rect(-object.width/2, -object.height/2, object.width, object.height);
+        ctx.stroke();
+        ctx.restore();
+        break;
+
       case 'ball':
         ctx.beginPath();
         ctx.arc(object.x, object.y, object.width / 2, 0, Math.PI * 2);

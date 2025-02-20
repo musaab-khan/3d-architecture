@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
 import { draw2DObject } from './CanvasUtils';
+import ObjectPropertiesEditor from './ObjectPropertiesEditor';
 
 const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
   const [selectedObject, setSelectedObject] = useState(null);
@@ -8,6 +9,17 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const canvasRef = useRef(null);
+
+  // Update selectedObject when objects change
+  useEffect(() => {
+    if (selectedObject) {
+      const updatedObject = objects.find(obj => obj.id === selectedObject.id);
+      if (updatedObject) {
+        setSelectedObject(updatedObject);
+      }
+    }
+    console.log(objects);
+  }, [objects, selectedObject]);
 
   // Draw all objects whenever objects state changes
   useEffect(() => {
@@ -83,6 +95,16 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
     );
   };
 
+  // const modifyObject = () =>{
+  //   setObjects(prevObjects =>
+  //     prevObjects.map(obj =>
+  //       obj.id === selectedObject.id
+  //         ? { ...obj, x:obj.x+1 }
+  //         : obj
+  //     )
+  //   );
+  // }
+
   const handleMouseUp = () => {
     setIsDragging(false);
   };
@@ -109,22 +131,8 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
       )}
       {selectedObject && (
         <div className="selected-object-info">
-          Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})
-          <div className="flex">
-            <p className="">Rotation: </p>
-            <div className='flex  flex-col'>
-            <label htmlFor="">X</label>
-            <input type="number" defaultValue={selectedObject.rotateX} />
-            </div>
-            <div className='flex flex-col'>
-            <label htmlFor="">Y</label>
-            <input type="number" defaultValue={selectedObject.rotateY} />
-            </div>
-            <div className='flex flex-col'>
-            <label htmlFor="">Z</label>
-            <input type="number" defaultValue={selectedObject.rotateZ} />
-            </div>
-          </div>
+          <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
+          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} />
         </div>
       )}
     </div>
