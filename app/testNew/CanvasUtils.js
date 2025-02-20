@@ -16,6 +16,19 @@ export const draw2DObject = (ctx, object) => {
         ctx.moveTo(object.x - object.width/2, object.y);
         ctx.lineTo(object.x + object.width/2, object.y);
         ctx.stroke();
+        // ctx.rotate(object.rotateY * Math.PI / 180);
+        
+        //square
+        // {ctx.beginPath();
+        // ctx.moveTo(object.x - object.width/2, object.y - object.height/2);
+        // ctx.lineTo(object.x + object.width/2, object.y - object.height/2);
+        // ctx.moveTo(object.x + object.width/2, object.y - object.height/2);
+        // ctx.lineTo(object.x + object.width/2, object.y + object.height/2);
+        // ctx.moveTo(object.x + object.width/2, object.y + object.height/2);
+        // ctx.lineTo(object.x - object.width/2, object.y+ object.height/2);
+        // ctx.moveTo(object.x - object.width/2, object.y + object.height/2);
+        // ctx.lineTo(object.x - object.width/2, object.y - object.height/2);
+        // ctx.stroke();}
         break;
       case 'ball':
         ctx.beginPath();
@@ -31,6 +44,7 @@ export const draw2DObject = (ctx, object) => {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+
         break;
       default:
         // Default fallback - draw a rectangle

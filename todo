@@ -1,1 +1,2 @@
 250 subtracted from the viewport3D in object creation and useEffect
+added the way to create the 2d for a cube (box in canvas utils, need to make the cases for showing)

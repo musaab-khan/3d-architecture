@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { rotate } from 'three/webgpu';
 
 const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
@@ -7,7 +8,10 @@ const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
     height: 50,
     depth: 30,
     x: initialPosition?.x || 0,
-    y: initialPosition?.y || 0
+    y: initialPosition?.y || 0,
+    rotateX: 10,
+    rotateY: 20,
+    rotateZ: 30
   });
 
   const handleChange = (e) => {
