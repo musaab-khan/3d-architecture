@@ -316,7 +316,7 @@ const Viewport3D = ({ objects }) => {
       // Create new object if it doesn't exist
       const texture = createTextTexture(object.name);
       let geometry, material, mesh;
-      material = new THREE.MeshStandardMaterial({ map: texture, color: 0x73f0ec });
+      material = new THREE.MeshStandardMaterial({ map: texture, color: parseInt(object.color.replace('#', ''), 16) });
       
       switch (object.type) {
         case 'wall':

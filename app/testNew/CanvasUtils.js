@@ -12,27 +12,32 @@ export const draw2DObject = (ctx, object) => {
     
     switch(object.type) {
       case 'wall':
+        ctx.fillStyle=object.color;
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotateY*Math.PI/180); // Assuming rotateY is in radians
         ctx.beginPath();
         ctx.moveTo(-object.width/2, 0);
         ctx.lineTo(object.width/2, 0);
+        ctx.fill();
         ctx.stroke();
         ctx.restore();
         break;
 
       case 'box':
+        ctx.fillStyle= object.color;
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotateY*Math.PI/180);
         ctx.beginPath();
         ctx.rect(-object.width/2, -object.height/2, object.width, object.height);
+        ctx.fill();
         ctx.stroke();
         ctx.restore();
         break;
 
       case 'ball':
+        ctx.fillStyle= object.color
         ctx.beginPath();
         ctx.arc(object.x, object.y, object.width / 2, 0, Math.PI * 2);
         ctx.fill();
