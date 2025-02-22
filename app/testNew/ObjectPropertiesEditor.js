@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ObjectPropertiesEditor = ({ selectedObject, setObjects }) => {
+const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => {
   const handlePropertyChange = (property, value) => {
     // Convert string values to numbers for numeric properties
     const numericValue = !isNaN(parseFloat(value)) ? parseFloat(value) : value;
@@ -14,11 +14,35 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects }) => {
     );
   };
 
+  const handleDelete = () => {
+    setObjects(prevObjects => 
+      prevObjects.filter(obj => obj.id !== selectedObject.id)
+    );
+    setSelected(null);
+  };
+
   if (!selectedObject) return null;
 
   return (
     <div className="object-properties-editor p-4 border rounded-md bg-white shadow-sm">
-      <h3 className="text-lg font-medium mb-2">Object Properties</h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-medium">Object Properties</h3>
+        <button
+          onClick={handleDelete}
+          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+        >
+          Delete
+        </button>
+      </div>
+      <div className="flex flex-col">
+          <label className="text-sm text-gray-600">Name</label>
+          <input 
+            type="text" 
+            value={selectedObject.name}
+            onChange={(e) => handlePropertyChange('name', e.target.value)}
+            className="border rounded p-1 text-sm"
+          />
+        </div>
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col">
           <label className="text-sm text-gray-600">X Position</label>

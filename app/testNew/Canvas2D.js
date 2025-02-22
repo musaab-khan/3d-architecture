@@ -276,7 +276,7 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
       {selectedObject && (
         <div className="selected-object-info">
           <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
-          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} />
+          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
         </div>
       )}
     </div>

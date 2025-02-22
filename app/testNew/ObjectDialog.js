@@ -1,5 +1,4 @@
 // import React, { useState } from 'react';
-// // import { rotate } from 'three/webgpu';
 
 // const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
 //   const [formData, setFormData] = useState({
@@ -12,14 +11,15 @@
 //     z: 0,
 //     rotateX: 0,
 //     rotateY: 90,
-//     rotateZ: 0
+//     rotateZ: 0,
+//     color: '#73f0ef' // Default color (blue)
 //   });
 
 //   const handleChange = (e) => {
 //     const { name, value } = e.target;
 //     setFormData(prev => ({
 //       ...prev,
-//       [name]: name === 'name' ? value : Number(value)
+//       [name]: name === 'name' ? value : name === 'color' ? value : Number(value)
 //     }));
 //   };
 
@@ -92,6 +92,29 @@
 //             />
 //           </div>
           
+//           <div className="form-group">
+//             <label htmlFor="color">Color:</label>
+//             <div className="color-picker-container flex items-center gap-2">
+//               <input
+//                 type="color"
+//                 id="color"
+//                 name="color"
+//                 value={formData.color}
+//                 onChange={handleChange}
+//                 className='h-8 w-10 border-0 cursor-pointer'
+//               />
+//               <input
+//                 type="text"
+//                 name="color"
+//                 value={formData.color}
+//                 onChange={handleChange}
+//                 pattern="^#([A-Fa-f0-9]{6})$"
+//                 placeholder="#RRGGBB"
+//                 style={{ color: formData.color }}
+//               />
+//             </div>
+//           </div>
+          
 //           <div className="dialog-buttons">
 //             <button type="submit" className="submit-button">Create Object</button>
 //             <button type="button" className="cancel-button" onClick={onClose}>Cancel</button>
@@ -106,6 +129,14 @@
 
 import React, { useState } from 'react';
 
+const TEXTURE_OPTIONS = [
+  { id: 'none', name: 'No Texture', url: null },
+  { id: 'brick', name: 'Brick', url: '/assets/textures/brick.jpg' },
+  { id: 'wood', name: 'Wood', url: 'app/testNew/textures/wood.png' },
+  { id: 'metal', name: 'Metal', url: '/textures/metal.jpg' },
+  { id: 'concrete', name: 'Concrete', url: '/textures/concrete.jpg' }
+];
+
 const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     name: `${selectedTool}-${Date.now().toString().slice(-4)}`,
@@ -118,23 +149,31 @@ const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
     rotateX: 0,
     rotateY: 90,
     rotateZ: 0,
-    color: '#73f0ef' // Default color (blue)
+    color: '#73f0ef',
+    textureId: 'none',
+    textureRepeat: 1,
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'name' ? value : name === 'color' ? value : Number(value)
+      [name]: name === 'name' ? value : 
+              name === 'color' ? value :
+              name === 'textureId' ? value :
+              name === 'textureRepeat' ? Number(value) :
+              Number(value)
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const selectedTexture = TEXTURE_OPTIONS.find(t => t.id === formData.textureId);
     onSubmit({
       id: `obj-${Date.now()}`,
       type: selectedTool,
-      ...formData
+      ...formData,
+      textureUrl: selectedTexture?.url || null
     });
   };
 
@@ -153,77 +192,127 @@ const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
               value={formData.name}
               onChange={handleChange}
               required
+              className="w-full p-2 border rounded"
             />
           </div>
           
-          <div className="form-group">
-            <label htmlFor="width">Width:</label>
-            <input
-              type="number"
-              id="width"
-              name="width"
-              min="5"
-              max="200"
-              value={formData.width}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="height">Height:</label>
-            <input
-              type="number"
-              id="height"
-              name="height"
-              min="5"
-              max="200"
-              value={formData.height}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="depth">Depth:</label>
-            <input
-              type="number"
-              id="depth"
-              name="depth"
-              min="5"
-              max="200"
-              value={formData.depth}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="color">Color:</label>
-            <div className="color-picker-container flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="form-group">
+              <label htmlFor="width">Width:</label>
               <input
-                type="color"
-                id="color"
-                name="color"
-                value={formData.color}
+                type="number"
+                id="width"
+                name="width"
+                min="5"
+                max="200"
+                value={formData.width}
                 onChange={handleChange}
-                className='h-8 w-10 border-0 cursor-pointer'
-              />
-              <input
-                type="text"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                pattern="^#([A-Fa-f0-9]{6})$"
-                placeholder="#RRGGBB"
-                style={{ color: formData.color }}
+                required
+                className="w-full p-2 border rounded"
               />
             </div>
+            
+            <div className="form-group">
+              <label htmlFor="height">Height:</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                min="5"
+                max="200"
+                value={formData.height}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="depth">Depth:</label>
+              <input
+                type="number"
+                id="depth"
+                name="depth"
+                min="5"
+                max="200"
+                value={formData.depth}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="color">Color:</label>
+              <div className="color-picker-container flex items-center gap-2">
+                <input
+                  type="color"
+                  id="color"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  className="h-8 w-10 border-0 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  pattern="^#([A-Fa-f0-9]{6})$"
+                  placeholder="#RRGGBB"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
           </div>
+
+          <div className="form-group mt-4">
+            <label htmlFor="textureId">Texture:</label>
+            <select
+              id="textureId"
+              name="textureId"
+              value={formData.textureId}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            >
+              {TEXTURE_OPTIONS.map(texture => (
+                <option key={texture.id} value={texture.id}>
+                  {texture.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {formData.textureId !== 'none' && (
+            <div className="form-group">
+              <label htmlFor="textureRepeat">Texture Repeat:</label>
+              <input
+                type="number"
+                id="textureRepeat"
+                name="textureRepeat"
+                min="1"
+                max="10"
+                value={formData.textureRepeat}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+          )}
           
-          <div className="dialog-buttons">
-            <button type="submit" className="submit-button">Create Object</button>
-            <button type="button" className="cancel-button" onClick={onClose}>Cancel</button>
+          <div className="dialog-buttons mt-6 flex justify-end gap-4">
+            <button 
+              type="button" 
+              className="px-4 py-2 border rounded hover:bg-gray-100" 
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Create Object
+            </button>
           </div>
         </form>
       </div>
