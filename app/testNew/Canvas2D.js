@@ -134,7 +134,6 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
 import { draw2DObject } from './CanvasUtils';
-import ObjectPropertiesEditor from './ObjectPropertiesEditor';
 
 const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObject, setSelectedObject }) => {
   // const [selectedObject, setSelectedObject] = useState(null);
@@ -272,12 +271,12 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
           Click on canvas to place.
         </div>
       )}
-      {selectedObject && (
+      {/* {selectedObject && (
         <div className="selected-object-info">
           <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
           <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

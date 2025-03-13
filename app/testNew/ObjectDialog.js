@@ -130,7 +130,7 @@
 import React, { useState } from 'react';
 import {TEXTURE_OPTIONS} from './textureUtils';
 
-const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
+const ObjectDialog = ({ selectedTool,setSelectedTool, initialPosition, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     name: `${selectedTool}-${Date.now().toString().slice(-4)}`,
     width: 50,
@@ -168,6 +168,7 @@ const ObjectDialog = ({ selectedTool, initialPosition, onSubmit, onClose }) => {
       ...formData,
       textureUrl: selectedTexture?.url || null
     });
+    setSelectedTool(null);
   };
 
   return (
