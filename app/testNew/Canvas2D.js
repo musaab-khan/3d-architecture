@@ -136,8 +136,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { draw2DObject } from './CanvasUtils';
 import ObjectPropertiesEditor from './ObjectPropertiesEditor';
 
-const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
-  const [selectedObject, setSelectedObject] = useState(null);
+const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObject, setSelectedObject }) => {
+  // const [selectedObject, setSelectedObject] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -145,7 +145,6 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject }) => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const canvasRef = useRef(null);
-
   useEffect(() => {
     if (selectedObject) {
       const updatedObject = objects.find(obj => obj.id === selectedObject.id);

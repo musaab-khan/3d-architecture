@@ -4,11 +4,13 @@ import ToolBar from './Toolbar';
 import Canvas2D from './Canvas2D';
 import Viewport3D from './Viewport3D';
 import ObjectDialog from './ObjectDialog';
+import ObjectsList from './ObjectsList';
 import './App.css';
 
 const App = () => {
   const [selectedTool, setSelectedTool] = useState(null);
   const [objects, setObjects] = useState([]);
+  const [selectedObject, setSelectedObject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   
@@ -47,11 +49,13 @@ const App = () => {
           setObjects={setObjects}
           selectedTool={selectedTool}
           onAddObject={handleAddObject}
+          selectedObject={selectedObject}
+          setSelectedObject={setSelectedObject}
         />
         
         <Viewport3D objects={objects} />
       </div>
-      
+      <ObjectsList objects={objects} selectedObject={selectedObject} setSelectedObject={setSelectedObject}></ObjectsList>
       {isDialogOpen && (
         <ObjectDialog 
           selectedTool={selectedTool} 
