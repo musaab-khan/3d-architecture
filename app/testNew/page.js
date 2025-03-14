@@ -68,23 +68,21 @@ const App = () => {
         />
       )}
       {(selectedObject&&!objectDetailsOpen) && (
-        <button className='fixed top-[50%] right-0 p-2 bg-blue-500 text-white rounded-l-md shadow-md' onClick={() => setObjectDetailsOpen(!objectDetailsOpen)}>
-          {
-            objectDetailsOpen ?
-            <span>&gt;</span>
-            :<span>&lt;</span>
-          }
+        <button className='fixed top-[50%] right-0 px-1 py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-l-md shadow-md' onClick={() => setObjectDetailsOpen(!objectDetailsOpen)}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-180" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </svg>
         </button>
       )}
       {(selectedObject&&objectDetailsOpen) && (
         <div className="selected-object-info fixed top-0 right-0 p-4 bg-white shadow-md w-[30vw] h-[100vh] overflow-y-auto">
             <div className="flex justify-between items-center">
               <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
-              <button className='p-1 mr-1 bg-slate-400 text-white rounded-md shadow-md' onClick={() => setObjectDetailsOpen(!objectDetailsOpen)}>
+              <button className='p-1 mr-1 text-slate-500 rounded-md' onClick={() => {setObjectDetailsOpen(!objectDetailsOpen);}}>
                   &#10006;
               </button>
             </div>
-          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
+          <ObjectPropertiesEditor objectsArray={objects} selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
         </div>
       )}
     </div>
