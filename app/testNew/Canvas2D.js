@@ -137,8 +137,8 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
         const newHeight = isFullScreen ? 500 : window.innerHeight;
         
         // Calculate scale factors
-        const widthRatio = newWidth / canvasRef.current.width;
-        const heightRatio = newHeight / canvasRef.current.height;
+        // const widthRatio = newWidth / canvasRef.current.width;
+        // const heightRatio = newHeight / canvasRef.current.height;
         
         canvasRef.current.width = newWidth;
         canvasRef.current.height = newHeight;
@@ -153,7 +153,8 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
         })));
         
         // Reset or scale panOffset
-        setPanOffset({ x: panOffset.x * widthRatio, y: panOffset.y * heightRatio });
+        // setPanOffset({ x: panOffset.x * widthRatio, y: panOffset.y * heightRatio });
+        setPanOffset({ x: panOffset.x, y: panOffset.y });
       }
     }, 0);
   };
@@ -161,9 +162,9 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
   return (
     <div className="canvas-container relative">
       <h2>2D Canvas</h2>
-      <button onClick={handleFullScreen} className="absolute top-0 right-0">
+      {/* <button onClick={handleFullScreen} className="absolute top-0 right-0">
         {isFullScreen ? 'Exit Full Screen' : 'View in Full Screen'}
-      </button>
+      </button> */}
       <canvas
         ref={canvasRef}
         width={500}
@@ -179,12 +180,12 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
         <button onClick={handleFullScreen} className="fixed top-4 right-1 ">
           Exit Full Screen
         </button>)}
-      {selectedTool && (
+      {/* {selectedTool && (
         <div className="tool-indicator">
           Selected tool: <strong>{selectedTool}</strong>.<br />
           Click on canvas to place.
         </div>
-      )}
+      )} */}
       {/* {selectedObject && (
         <div className="selected-object-info">
           <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>

@@ -74,7 +74,7 @@ const SlideOutObjectsList = ({ objects, selectedObject, setSelectedObject }) => 
   };
 
   return (
-    <div className="fixed left-0 top-1/4 flex h-auto z-10">
+    <div className="fixed left-0 top-1/2 flex h-auto z-10">
       {/* Slide-out panel with relative positioning */}
       <div
         className={`absolute left-0 bg-white p-4 shadow-lg transition-all duration-300 ease-in-out w-64 border border-gray-200 rounded-r-md ${isOpen ? 'translate-x-0' : '-translate-x-full'

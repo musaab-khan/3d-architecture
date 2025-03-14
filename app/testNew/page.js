@@ -82,7 +82,7 @@ const App = () => {
                   &#10006;
               </button>
             </div>
-          <ObjectPropertiesEditor objectsArray={objects} selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
+          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {TEXTURE_OPTIONS} from './textureUtils';
 
-const ObjectPropertiesEditor = ({ objectsArray, selectedObject, setObjects, setSelected }) => {
+const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => {
   const handlePropertyChange = (property, value) => {
     // Convert string values to numbers for numeric properties
     const numericValue = !isNaN(parseFloat(value)) ? parseFloat(value) : value;
