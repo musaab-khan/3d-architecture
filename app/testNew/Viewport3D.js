@@ -16,10 +16,10 @@
 //     const context = canvas.getContext('2d');
 //     canvas.width = 512;
 //     canvas.height = 512;
-    
+
 //     context.fillStyle = '#FFFFFFff';
 //     context.fillRect(0, 0, canvas.width, canvas.height);
-    
+
 //     context.font = 'bold 72px Arial';
 //     context.fillStyle = 'black';
 //     context.textAlign = 'center';
@@ -28,7 +28,7 @@
 //     context.lineWidth = 6;
 //     context.strokeText(text, canvas.width /2, canvas.height/2);
 //     context.fillText(text, canvas.width / 2, canvas.height / 2);
-    
+
 //     return new THREE.CanvasTexture(canvas);
 //   };
 
@@ -52,7 +52,7 @@
 //         texture.wrapS = THREE.RepeatWrapping;
 //         texture.wrapT = THREE.RepeatWrapping;
 //         texture.repeat.set(object.textureRepeat || 1, object.textureRepeat || 1);
-        
+
 //         material.map = texture;
 //         material.color.set(0xFFFFFF); 
 //         material.needsUpdate = true;
@@ -84,7 +84,7 @@
 //     const scene = new THREE.Scene();
 //     scene.background = new THREE.Color(0xf0f0f0);
 //     sceneRef.current = scene;
-    
+
 //     const camera = new THREE.PerspectiveCamera(
 //       75,
 //       mountRef.current.clientWidth / mountRef.current.clientHeight,
@@ -197,7 +197,7 @@
 
 //         const material = await createMaterial(object);
 //         const mesh = new THREE.Mesh(geometry, material);
-        
+
 //         mesh.position.set(
 //           object.x - 250,
 //           object.z + object.height / 2,
@@ -253,19 +253,19 @@ const Viewport3D = ({ objects }) => {
     const context = canvas.getContext('2d');
     canvas.width = 512;
     canvas.height = 512;
-    
+
     context.fillStyle = '#FFFFFFff';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     context.font = 'bold 72px Arial';
     context.fillStyle = 'black';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.strokeStyle = 'white';
     context.lineWidth = 6;
-    context.strokeText(text, canvas.width /2, canvas.height/2);
+    context.strokeText(text, canvas.width / 2, canvas.height / 2);
     context.fillText(text, canvas.width / 2, canvas.height / 2);
-    
+
     return new THREE.CanvasTexture(canvas);
   };
 
@@ -289,9 +289,9 @@ const Viewport3D = ({ objects }) => {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(object.textureRepeat || 1, object.textureRepeat || 1);
-        
+
         material.map = texture;
-        material.color.set(0xFFFFFF); 
+        material.color.set(0xFFFFFF);
         material.needsUpdate = true;
       } catch (error) {
         console.error('Error loading texture:', error);
@@ -321,11 +321,11 @@ const Viewport3D = ({ objects }) => {
 
     const width = isFullScreen ? window.innerWidth : 500;
     const height = isFullScreen ? window.innerHeight : 500;
-    
+
     // Update camera aspect ratio
     cameraRef.current.aspect = width / height;
     cameraRef.current.updateProjectionMatrix();
-    
+
     // Resize renderer
     rendererRef.current.setSize(width, height);
   };
@@ -345,7 +345,7 @@ const Viewport3D = ({ objects }) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
     sceneRef.current = scene;
-    
+
     const camera = new THREE.PerspectiveCamera(
       75,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
@@ -382,7 +382,41 @@ const Viewport3D = ({ objects }) => {
     };
     animate();
 
+    // const handleKeyDown = (event) => {
+    //   if (!cameraRef.current) return;
+
+    //   const moveSpeed = 0.1;
+    //   switch (event.key) {
+    //     case 'ArrowLeft': // Move left (X-axis)
+    //       cameraRef.current.position.x -= moveSpeed;
+    //       break;
+    //     case 'ArrowRight': // Move right (X-axis)
+    //       cameraRef.current.position.x += moveSpeed;
+    //       break;
+    //     case 'ArrowUp': // Move up (Y-axis)
+    //       cameraRef.current.position.y += moveSpeed;
+    //       break;
+    //     case 'ArrowDown': // Move down (Y-axis)
+    //       cameraRef.current.position.y -= moveSpeed;
+    //       break;
+    //     case 'w': // Move forward (Z-axis)
+    //       cameraRef.current.position.z -= moveSpeed;
+    //       break;
+    //     case 's': // Move backward (Z-axis)
+    //       cameraRef.current.position.z += moveSpeed;
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // };
+
+    // window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup the event listener on unmount
+
+
     return () => {
+      // window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
       if (mountRef.current && renderer.domElement) {
         mountRef.current.removeChild(renderer.domElement);
@@ -462,7 +496,7 @@ const Viewport3D = ({ objects }) => {
 
         const material = await createMaterial(object);
         const mesh = new THREE.Mesh(geometry, material);
-        
+
         mesh.position.set(
           object.x - 250,
           object.z + object.height / 2,
@@ -489,27 +523,37 @@ const Viewport3D = ({ objects }) => {
   return (
     <div className="flex flex-col relative">
       <h2>3D Viewport</h2>
-      {/* <button 
-        onClick={handleFullScreen} 
-        className="absolute top-0 right-0 z-10 bg-white px-2 py-1 border border-gray-300 rounded"
+      <button
+        onClick={handleFullScreen}
+        className="absolute top-0 right-0 z-10 bg-white border border-gray-300 rounded"
       >
-        {isFullScreen ? 'Exit Full Screen' : 'View in Full Screen'}
-      </button> */}
-      <div 
-        ref={mountRef} 
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+        </svg>
+      </button>
+      <div
+        ref={mountRef}
         className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
-        style={{ 
-          width: isFullScreen ? '100vw' : '500px', 
-          height: isFullScreen ? '100vh' : '500px', 
-          border: '1px solid black' 
+        style={{
+          width: isFullScreen ? '100vw' : '500px',
+          height: isFullScreen ? '100vh' : '500px',
+          border: '1px solid black'
         }}
       ></div>
       {isFullScreen && (
-        <button 
-          onClick={handleFullScreen} 
-          className="fixed top-4 right-4 z-50 bg-white px-2 py-1 border border-gray-300 rounded"
+        <button
+          onClick={handleFullScreen}
+          className="fixed top-4 right-4 z-50 bg-white border border-gray-300 rounded"
         >
-          Exit Full Screen
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+          </svg>
         </button>
       )}
     </div>

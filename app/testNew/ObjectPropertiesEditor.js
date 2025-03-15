@@ -47,7 +47,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
   if (!selectedObject) return null;
 
   return (
-    <div className="object-properties-editor p-4 border rounded-md bg-white shadow-sm h-max-[100vh] overflow-y-auto">
+    <div className="object-properties-editor p-4 border rounded-md bg-white shadow-sm h-max-[100vh] overflow-y-auto z-50">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-medium">Object Properties</h3>
         <div className="flex gap-2">

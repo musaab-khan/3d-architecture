@@ -134,13 +134,12 @@
   
   .viewport-container {
     display: flex;
-    gap: 20px;
     flex-wrap: wrap;
   }
   
   .canvas-container {
-    flex: 1;
-    min-width: 300px;
+    /* flex: 1;
+    min-width: 300px; */
   }
   
   .canvas-2d {

@@ -135,14 +135,14 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
       if (canvasRef.current) {
         const newWidth = isFullScreen ? 500 : window.innerWidth;
         const newHeight = isFullScreen ? 500 : window.innerHeight;
-        
+
         // Calculate scale factors
         // const widthRatio = newWidth / canvasRef.current.width;
         // const heightRatio = newHeight / canvasRef.current.height;
-        
+
         canvasRef.current.width = newWidth;
         canvasRef.current.height = newHeight;
-        
+
         // Scale objects
         setObjects(prevObjects => prevObjects.map(obj => ({
           ...obj,
@@ -151,7 +151,7 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
           // x: obj.x * widthRatio,
           // y: obj.y * heightRatio
         })));
-        
+
         // Reset or scale panOffset
         // setPanOffset({ x: panOffset.x * widthRatio, y: panOffset.y * heightRatio });
         setPanOffset({ x: panOffset.x, y: panOffset.y });
@@ -162,14 +162,19 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
   return (
     <div className="canvas-container relative">
       <h2>2D Canvas</h2>
-      {/* <button onClick={handleFullScreen} className="absolute top-0 right-0">
-        {isFullScreen ? 'Exit Full Screen' : 'View in Full Screen'}
-      </button> */}
+      <button onClick={handleFullScreen} className="absolute top-0 right-0 border-2 rounded-md">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+          <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+        </svg>
+      </button>
       <canvas
         ref={canvasRef}
         width={500}
         height={500}
-        className={`canvas-2dv ${isFullScreen ? 'fixed top-0 left-0' : ''}`}
+        className={`canvas-2dv ${isFullScreen ? 'fixed top-0 left-0 z-30' : ''}`}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -177,21 +182,15 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
         style={{ border: '1px solid black', background: '#f5f5f5' }}
       ></canvas>
       {isFullScreen && (
-        <button onClick={handleFullScreen} className="fixed top-4 right-1 ">
-          Exit Full Screen
+        <button onClick={handleFullScreen} className="fixed top-4 right-4 z-30">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+          </svg>
         </button>)}
-      {/* {selectedTool && (
-        <div className="tool-indicator">
-          Selected tool: <strong>{selectedTool}</strong>.<br />
-          Click on canvas to place.
-        </div>
-      )} */}
-      {/* {selectedObject && (
-        <div className="selected-object-info">
-          <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
-          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
-        </div>
-      )} */}
+        
     </div>
   );
 };

@@ -16,6 +16,16 @@ const Page = () => {
         console.log(localStorage.token)
     }
 
+    const decodeToken = (token) => {
+        if (!token) return null;
+        try {
+            return JSON.parse(atob(token.split('.')[1])); // Decode Base64 payload
+        } catch (e) {
+            console.error("Invalid token: ",e);
+            return null;
+        }
+    };
+
     useEffect(() => {
         const fetchModels = async () => {
             try {
@@ -32,6 +42,7 @@ const Page = () => {
                 } else {
                     console.error('Error fetching models:', data.message);
                 }
+                console.log("Decoded Token:", decodeToken(token));
             } catch (error) {
                 console.error('Error fetching models:', error);
             }
@@ -41,9 +52,10 @@ const Page = () => {
     }, []);
 
     const handleModelClick = (id, dimensions) => {
-        const [length, width] = dimensions;
+        // const [length, width] = dimensions;
         // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
-        router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
+        // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
+        router.push(`/testNew?projectID=${id}`);
     };
 
     // Split models into two grids (first grid and second grid)
@@ -93,7 +105,7 @@ const Page = () => {
                         <p className='text-xl'>Dimensions: {model.dimensions[0]} x {model.dimensions[1]}</p>
                     </div>
                 )) : (
-                    
+
                     <div></div>
                 )}
             </div>
