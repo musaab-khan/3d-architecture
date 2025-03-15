@@ -123,106 +123,106 @@ const App = () => {
     loadProjectData();
   }, []);
 
-  const loadProjectData = async () => {
-    setIsLoading(true);
-    try {
-      const projectId = searchParams.get('projectID');
+  // const loadProjectData = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const projectId = searchParams.get('projectID');
 
-      if (!projectId) {
-        setIsLoading(false);
-        return; // No project to load
-      }
+  //     if (!projectId) {
+  //       setIsLoading(false);
+  //       return; // No project to load
+  //     }
 
-      // Get token from local storage
-      const token = localStorage.getItem('token');
+  //     // Get token from local storage
+  //     const token = localStorage.getItem('token');
 
-      if (!token) {
-        console.error('No authentication token found');
-        setIsLoading(false);
-        return;
-      }
+  //     if (!token) {
+  //       console.error('No authentication token found');
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}project/get-model-json/${projectId}`;
+  //     const apiUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}project/get-model-json/${projectId}`;
 
-      const response = await fetch(apiUrl);
+  //     const response = await fetch(apiUrl);
 
-      if (!response.ok) {
-        throw new Error(`Failed to load project: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to load project: ${response.status}`);
+  //     }
 
-      const responseData = await response.json();
+  //     const responseData = await response.json();
 
-      // The actual project data is nested inside a "model" property
-      const projectData = responseData.model;
+  //     // The actual project data is nested inside a "model" property
+  //     const projectData = responseData.model;
 
-      if (!projectData) {
-        console.error('No model data found in response');
-        setIsLoading(false);
-        return;
-      }
+  //     if (!projectData) {
+  //       console.error('No model data found in response');
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-      // Update state with project data
-      setProjectName(projectData.name || 'Untitled Project');
-      setDimensions(projectData.dimensions || [800, 600]);
+  //     // Update state with project data
+  //     setProjectName(projectData.name || 'Untitled Project');
+  //     setDimensions(projectData.dimensions || [800, 600]);
 
-      // Parse modelJSON into objects array
-      if (projectData.modelJSON) {
-        const parsedObjects = JSON.parse(projectData.modelJSON);
-        setObjects(parsedObjects);
-      } else {
-        // console.error('modelJSON is missing in model data');
-        setObjects([]);
-      }
-    } catch (error) {
-      console.error('Error loading project:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     // Parse modelJSON into objects array
+  //     if (projectData.modelJSON) {
+  //       const parsedObjects = JSON.parse(projectData.modelJSON);
+  //       setObjects(parsedObjects);
+  //     } else {
+  //       // console.error('modelJSON is missing in model data');
+  //       setObjects([]);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error loading project:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const saveProject = async () => {
-    try {
-      const projectId = searchParams.get('projectID');
+  // const saveProject = async () => {
+  //   try {
+  //     const projectId = searchParams.get('projectID');
 
-      if (!projectId) {
-        console.error('No project ID found');
-        return;
-      }
+  //     if (!projectId) {
+  //       console.error('No project ID found');
+  //       return;
+  //     }
 
-      // Get token from local storage
-      const token = localStorage.getItem('token');
+  //     // Get token from local storage
+  //     const token = localStorage.getItem('token');
 
-      if (!token) {
-        console.error('No authentication token found');
-        return;
-      }
+  //     if (!token) {
+  //       console.error('No authentication token found');
+  //       return;
+  //     }
 
-      // Convert objects array to JSON string
-      const modelJSON = JSON.stringify(objects);
+  //     // Convert objects array to JSON string
+  //     const modelJSON = JSON.stringify(objects);
 
-      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + 'idk/update-model-json', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          projectID: projectId,
-          modelJSON: modelJSON
-        })
-      });
+  //     const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + 'idk/update-model-json', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         projectID: projectId,
+  //         modelJSON: modelJSON
+  //       })
+  //     });
 
-      if (!response.ok) {
-        throw new Error('Failed to save project');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Failed to save project');
+  //     }
 
-      alert('Project saved successfully!');
+  //     alert('Project saved successfully!');
 
-    } catch (error) {
-      console.error('Error saving project:', error);
-      alert('Failed to save project. Please try again.');
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error saving project:', error);
+  //     alert('Failed to save project. Please try again.');
+  //   }
+  // };
 
   const handleToolSelect = (tool) => {
     setSelectedTool(tool);
@@ -254,7 +254,7 @@ const App = () => {
       <header className="app-header">
         <div className="flex justify-between items-center w-full">
           <h1>2D-to-3D Object Creator</h1>
-          <div className="project-controls flex gap-4">
+          {/* <div className="project-controls flex gap-4">
             <input
               type="text"
               value={projectName}
@@ -274,7 +274,7 @@ const App = () => {
             >
               Reload Project
             </button>
-          </div>
+          </div> */}
         </div>
       </header>
 
