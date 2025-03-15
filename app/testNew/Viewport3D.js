@@ -1,8 +1,9 @@
-// import React, { useRef, useEffect } from 'react';
+// import React, { useRef, useEffect, useState } from 'react';
 // import * as THREE from 'three';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 // const Viewport3D = ({ objects }) => {
+//   const [isFullScreen, setIsFullScreen] = useState(false);
 //   const mountRef = useRef(null);
 //   const sceneRef = useRef(null);
 //   const rendererRef = useRef(null);
@@ -26,7 +27,7 @@
 //     context.textBaseline = 'middle';
 //     context.strokeStyle = 'white';
 //     context.lineWidth = 6;
-//     context.strokeText(text, canvas.width /2, canvas.height/2);
+//     context.strokeText(text, canvas.width / 2, canvas.height / 2);
 //     context.fillText(text, canvas.width / 2, canvas.height / 2);
 
 //     return new THREE.CanvasTexture(canvas);
@@ -54,7 +55,7 @@
 //         texture.repeat.set(object.textureRepeat || 1, object.textureRepeat || 1);
 
 //         material.map = texture;
-//         material.color.set(0xFFFFFF); 
+//         material.color.set(0xFFFFFF);
 //         material.needsUpdate = true;
 //       } catch (error) {
 //         console.error('Error loading texture:', error);
@@ -77,6 +78,30 @@
 //         return null;
 //     }
 //   };
+
+//   // Function to handle resize
+//   const handleResize = () => {
+//     if (!mountRef.current || !rendererRef.current || !cameraRef.current) return;
+
+//     const width = isFullScreen ? window.innerWidth : 500;
+//     const height = isFullScreen ? window.innerHeight : 500;
+
+//     // Update camera aspect ratio
+//     cameraRef.current.aspect = width / height;
+//     cameraRef.current.updateProjectionMatrix();
+
+//     // Resize renderer
+//     rendererRef.current.setSize(width, height);
+//   };
+
+//   const handleFullScreen = () => {
+//     setIsFullScreen(prev => !prev);
+//   };
+
+//   useEffect(() => {
+//     // This effect runs when isFullScreen changes
+//     handleResize();
+//   }, [isFullScreen]);
 
 //   useEffect(() => {
 //     if (!mountRef.current) return;
@@ -111,6 +136,9 @@
 //     directionalLight.position.set(1, 1, 1);
 //     scene.add(directionalLight);
 
+//     // Add window resize listener
+//     window.addEventListener('resize', handleResize);
+
 //     const animate = () => {
 //       requestAnimationFrame(animate);
 //       controls.update();
@@ -118,8 +146,43 @@
 //     };
 //     animate();
 
+//     // const handleKeyDown = (event) => {
+//     //   if (!cameraRef.current) return;
+
+//     //   const moveSpeed = 0.1;
+//     //   switch (event.key) {
+//     //     case 'ArrowLeft': // Move left (X-axis)
+//     //       cameraRef.current.position.x -= moveSpeed;
+//     //       break;
+//     //     case 'ArrowRight': // Move right (X-axis)
+//     //       cameraRef.current.position.x += moveSpeed;
+//     //       break;
+//     //     case 'ArrowUp': // Move up (Y-axis)
+//     //       cameraRef.current.position.y += moveSpeed;
+//     //       break;
+//     //     case 'ArrowDown': // Move down (Y-axis)
+//     //       cameraRef.current.position.y -= moveSpeed;
+//     //       break;
+//     //     case 'w': // Move forward (Z-axis)
+//     //       cameraRef.current.position.z -= moveSpeed;
+//     //       break;
+//     //     case 's': // Move backward (Z-axis)
+//     //       cameraRef.current.position.z += moveSpeed;
+//     //       break;
+//     //     default:
+//     //       break;
+//     //   }
+//     // };
+
+//     // window.addEventListener('keydown', handleKeyDown);
+
+//     // Cleanup the event listener on unmount
+
+
 //     return () => {
-//       if (mountRef.current) {
+//       // window.removeEventListener('keydown', handleKeyDown);
+//       window.removeEventListener('resize', handleResize);
+//       if (mountRef.current && renderer.domElement) {
 //         mountRef.current.removeChild(renderer.domElement);
 //       }
 //       renderer.dispose();
@@ -222,12 +285,41 @@
 //   }, [objects]);
 
 //   return (
-//     <div className="flex flex-col">
+//     <div className="flex flex-col relative">
 //       <h2>3D Viewport</h2>
-//       <div 
-//         ref={mountRef} 
-//         style={{ width: '500px', height: '500px', border: '1px solid black' }}
+//       <button
+//         onClick={handleFullScreen}
+//         className="absolute top-0 right-0 z-10 bg-white border border-gray-300 rounded"
+//       >
+//         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//           <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+//           <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+//           <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+//           <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+//         </svg>
+//       </button>
+//       <div
+//         ref={mountRef}
+//         className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
+//         style={{
+//           width: isFullScreen ? '100vw' : '500px',
+//           height: isFullScreen ? '100vh' : '500px',
+//           border: '1px solid black'
+//         }}
 //       ></div>
+//       {isFullScreen && (
+//         <button
+//           onClick={handleFullScreen}
+//           className="fixed top-4 right-4 z-50 bg-white border border-gray-300 rounded"
+//         >
+//           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//             <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+//             <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+//             <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+//             <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+//           </svg>
+//         </button>
+//       )}
 //     </div>
 //   );
 // };
@@ -247,6 +339,7 @@ const Viewport3D = ({ objects }) => {
   const controlsRef = useRef(null);
   const objectsRef = useRef({});
   const textureLoaderRef = useRef(new THREE.TextureLoader());
+  const animationFrameIdRef = useRef(null);
 
   const createTextTexture = (text) => {
     const canvas = document.createElement('canvas');
@@ -339,8 +432,12 @@ const Viewport3D = ({ objects }) => {
     handleResize();
   }, [isFullScreen]);
 
+  // Setup THREE.js scene - this should only run once
   useEffect(() => {
-    if (!mountRef.current) return;
+    // Only initialize if we haven't already
+    if (rendererRef.current || !mountRef.current) return;
+    
+    console.log('Initializing THREE.js scene');
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
@@ -359,6 +456,13 @@ const Viewport3D = ({ objects }) => {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     rendererRef.current = renderer;
+    
+    // Check if mountRef element already has a canvas child
+    if (mountRef.current.querySelector('canvas')) {
+      console.warn('Canvas already exists in mount ref, cleaning up first');
+      mountRef.current.innerHTML = '';
+    }
+    
     mountRef.current.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -376,57 +480,61 @@ const Viewport3D = ({ objects }) => {
     window.addEventListener('resize', handleResize);
 
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationFrameIdRef.current = requestAnimationFrame(animate);
       controls.update();
       renderer.render(scene, camera);
     };
     animate();
 
-    // const handleKeyDown = (event) => {
-    //   if (!cameraRef.current) return;
-
-    //   const moveSpeed = 0.1;
-    //   switch (event.key) {
-    //     case 'ArrowLeft': // Move left (X-axis)
-    //       cameraRef.current.position.x -= moveSpeed;
-    //       break;
-    //     case 'ArrowRight': // Move right (X-axis)
-    //       cameraRef.current.position.x += moveSpeed;
-    //       break;
-    //     case 'ArrowUp': // Move up (Y-axis)
-    //       cameraRef.current.position.y += moveSpeed;
-    //       break;
-    //     case 'ArrowDown': // Move down (Y-axis)
-    //       cameraRef.current.position.y -= moveSpeed;
-    //       break;
-    //     case 'w': // Move forward (Z-axis)
-    //       cameraRef.current.position.z -= moveSpeed;
-    //       break;
-    //     case 's': // Move backward (Z-axis)
-    //       cameraRef.current.position.z += moveSpeed;
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // };
-
-    // window.addEventListener('keydown', handleKeyDown);
-
-    // Cleanup the event listener on unmount
-
-
     return () => {
-      // window.removeEventListener('keydown', handleKeyDown);
+      console.log('Cleaning up THREE.js');
       window.removeEventListener('resize', handleResize);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
+      
+      // Cancel animation frame
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
       }
-      renderer.dispose();
+      
+      // Clean up scene objects
+      if (sceneRef.current) {
+        sceneRef.current.traverse((object) => {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) {
+            if (object.material.map) object.material.map.dispose();
+            object.material.dispose();
+          }
+        });
+      }
+      
+      // Clean up renderer
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+        rendererRef.current = null;
+      }
+      
+      // Clean up controls
+      if (controlsRef.current) {
+        controlsRef.current.dispose();
+        controlsRef.current = null;
+      }
+      
+      // Clear mount element
+      if (mountRef.current) {
+        mountRef.current.innerHTML = '';
+      }
+      
+      // Reset all refs
+      sceneRef.current = null;
+      cameraRef.current = null;
+      objectsRef.current = {};
     };
   }, []);
 
+  // Update objects
   useEffect(() => {
     if (!sceneRef.current) return;
+    
     const scene = sceneRef.current;
     const objectsMap = objectsRef.current;
 
@@ -538,8 +646,8 @@ const Viewport3D = ({ objects }) => {
         ref={mountRef}
         className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
         style={{
-          width: isFullScreen ? '100vw' : '500px',
-          height: isFullScreen ? '100vh' : '500px',
+          width: isFullScreen ? '100vw' : '501px',
+          height: isFullScreen ? '100vh' : '501px',
           border: '1px solid black'
         }}
       ></div>
