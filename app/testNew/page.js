@@ -120,9 +120,9 @@ const App = () => {
   const isLoading = false;
 
   // Extract projectId from URL on component mount
-  useEffect(() => {
-    loadProjectData();
-  }, []);
+  // useEffect(() => {
+  //   loadProjectData();
+  // }, []);
 
   // const loadProjectData = async () => {
   //   setIsLoading(true);
