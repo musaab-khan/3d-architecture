@@ -117,7 +117,7 @@ const App = () => {
   // const [projectName, setProjectName] = useState('Untitled Project');
   // const [dimensions, setDimensions] = useState([800, 600]);
   // const [isLoading, setIsLoading] = useState(true);
-  const isLoading = False;
+  const isLoading = false;
 
   // Extract projectId from URL on component mount
   useEffect(() => {
