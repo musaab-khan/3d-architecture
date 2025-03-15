@@ -95,7 +95,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import MoonLoader from "react-spinners/MoonLoader";
-import { useSearchParams } from 'next/navigation';
+// import { useSearchParams } from 'next/navigation';
 import ToolBar from './Toolbar';
 import Canvas2D from './Canvas2D';
 import Viewport3D from './Viewport3D';
@@ -114,9 +114,10 @@ const App = () => {
   const [selectedObject, setSelectedObject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  const [projectName, setProjectName] = useState('Untitled Project');
+  // const [projectName, setProjectName] = useState('Untitled Project');
   // const [dimensions, setDimensions] = useState([800, 600]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
+  const isLoading = False;
 
   // Extract projectId from URL on component mount
   useEffect(() => {
