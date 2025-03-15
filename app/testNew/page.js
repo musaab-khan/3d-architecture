@@ -106,7 +106,7 @@ import './App.css';
 
 const App = () => {
   // const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
   const [selectedTool, setSelectedTool] = useState(null);
   const [objectDetailsOpen, setObjectDetailsOpen] = useState(false);
