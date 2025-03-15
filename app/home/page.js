@@ -51,7 +51,7 @@ const Page = () => {
         fetchModels();
     }, []);
 
-    const handleModelClick = (id, dimensions) => {
+    const handleModelClick = (id) => {
         // const [length, width] = dimensions;
         // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
         // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
