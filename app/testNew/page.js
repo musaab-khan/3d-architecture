@@ -95,7 +95,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import MoonLoader from "react-spinners/MoonLoader";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import ToolBar from './Toolbar';
 import Canvas2D from './Canvas2D';
 import Viewport3D from './Viewport3D';
