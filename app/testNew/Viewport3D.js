@@ -11,6 +11,7 @@
 //   const controlsRef = useRef(null);
 //   const objectsRef = useRef({});
 //   const textureLoaderRef = useRef(new THREE.TextureLoader());
+//   const animationFrameIdRef = useRef(null);
 
 //   const createTextTexture = (text) => {
 //     const canvas = document.createElement('canvas');
@@ -103,8 +104,12 @@
 //     handleResize();
 //   }, [isFullScreen]);
 
+//   // Setup THREE.js scene - this should only run once
 //   useEffect(() => {
-//     if (!mountRef.current) return;
+//     // Only initialize if we haven't already
+//     if (rendererRef.current || !mountRef.current) return;
+    
+//     console.log('Initializing THREE.js scene');
 
 //     const scene = new THREE.Scene();
 //     scene.background = new THREE.Color(0xf0f0f0);
@@ -123,6 +128,13 @@
 //     const renderer = new THREE.WebGLRenderer({ antialias: true });
 //     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
 //     rendererRef.current = renderer;
+    
+//     // Check if mountRef element already has a canvas child
+//     if (mountRef.current.querySelector('canvas')) {
+//       console.warn('Canvas already exists in mount ref, cleaning up first');
+//       mountRef.current.innerHTML = '';
+//     }
+    
 //     mountRef.current.appendChild(renderer.domElement);
 
 //     const controls = new OrbitControls(camera, renderer.domElement);
@@ -140,57 +152,61 @@
 //     window.addEventListener('resize', handleResize);
 
 //     const animate = () => {
-//       requestAnimationFrame(animate);
+//       animationFrameIdRef.current = requestAnimationFrame(animate);
 //       controls.update();
 //       renderer.render(scene, camera);
 //     };
 //     animate();
 
-//     // const handleKeyDown = (event) => {
-//     //   if (!cameraRef.current) return;
-
-//     //   const moveSpeed = 0.1;
-//     //   switch (event.key) {
-//     //     case 'ArrowLeft': // Move left (X-axis)
-//     //       cameraRef.current.position.x -= moveSpeed;
-//     //       break;
-//     //     case 'ArrowRight': // Move right (X-axis)
-//     //       cameraRef.current.position.x += moveSpeed;
-//     //       break;
-//     //     case 'ArrowUp': // Move up (Y-axis)
-//     //       cameraRef.current.position.y += moveSpeed;
-//     //       break;
-//     //     case 'ArrowDown': // Move down (Y-axis)
-//     //       cameraRef.current.position.y -= moveSpeed;
-//     //       break;
-//     //     case 'w': // Move forward (Z-axis)
-//     //       cameraRef.current.position.z -= moveSpeed;
-//     //       break;
-//     //     case 's': // Move backward (Z-axis)
-//     //       cameraRef.current.position.z += moveSpeed;
-//     //       break;
-//     //     default:
-//     //       break;
-//     //   }
-//     // };
-
-//     // window.addEventListener('keydown', handleKeyDown);
-
-//     // Cleanup the event listener on unmount
-
-
 //     return () => {
-//       // window.removeEventListener('keydown', handleKeyDown);
+//       console.log('Cleaning up THREE.js');
 //       window.removeEventListener('resize', handleResize);
-//       if (mountRef.current && renderer.domElement) {
-//         mountRef.current.removeChild(renderer.domElement);
+      
+//       // Cancel animation frame
+//       if (animationFrameIdRef.current) {
+//         cancelAnimationFrame(animationFrameIdRef.current);
+//         animationFrameIdRef.current = null;
 //       }
-//       renderer.dispose();
+      
+//       // Clean up scene objects
+//       if (sceneRef.current) {
+//         sceneRef.current.traverse((object) => {
+//           if (object.geometry) object.geometry.dispose();
+//           if (object.material) {
+//             if (object.material.map) object.material.map.dispose();
+//             object.material.dispose();
+//           }
+//         });
+//       }
+      
+//       // Clean up renderer
+//       if (rendererRef.current) {
+//         rendererRef.current.dispose();
+//         rendererRef.current = null;
+//       }
+      
+//       // Clean up controls
+//       if (controlsRef.current) {
+//         controlsRef.current.dispose();
+//         controlsRef.current = null;
+//       }
+      
+//       // Clear mount element
+//       if (mountRef.current) {
+//         mountRef.current.innerHTML = '';
+//       }
+      
+//       // Reset all refs
+//       sceneRef.current = null;
+//       cameraRef.current = null;
+//       objectsRef.current = {};
 //     };
 //   }, []);
 
+//   // Update objects
 //   useEffect(() => {
 //     if (!sceneRef.current) return;
+    
 //     const scene = sceneRef.current;
 //     const objectsMap = objectsRef.current;
 
@@ -302,8 +318,8 @@
 //         ref={mountRef}
 //         className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
 //         style={{
-//           width: isFullScreen ? '100vw' : '500px',
-//           height: isFullScreen ? '100vh' : '500px',
+//           width: isFullScreen ? '100vw' : '501px',
+//           height: isFullScreen ? '100vh' : '501px',
 //           border: '1px solid black'
 //         }}
 //       ></div>
@@ -329,6 +345,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 const Viewport3D = ({ objects }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -340,6 +357,57 @@ const Viewport3D = ({ objects }) => {
   const objectsRef = useRef({});
   const textureLoaderRef = useRef(new THREE.TextureLoader());
   const animationFrameIdRef = useRef(null);
+
+  // Export scene as GLB function
+  const exportSceneAsGLB = (filename = 'scene.glb') => {
+    if (!sceneRef.current) {
+      console.error('No scene to export');
+      return;
+    }
+    
+    // Create GLTFExporter instance
+    const exporter = new GLTFExporter();
+    
+    // Configure export options
+    const options = {
+      binary: true, // Export as binary GLB (instead of JSON-based GLTF)
+      includeCustomExtensions: true,
+      trs: false, // Use matrix transforms instead of TRS
+      onlyVisible: true, // Only export visible objects
+      truncateDrawRange: true,
+      animations: [], // No animations in this example
+      forceIndices: false
+    };
+    
+    // Start the export process
+    exporter.parse(
+      sceneRef.current,
+      (buffer) => {
+        // Create a Blob from the buffer
+        const blob = new Blob([buffer], { type: 'application/octet-stream' });
+        
+        // Create a download URL for the Blob
+        const url = URL.createObjectURL(blob);
+        
+        // Create a temporary link element for downloading
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        
+        // Append to the document, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      },
+      (error) => {
+        console.error('An error occurred during GLB export:', error);
+      },
+      options
+    );
+  };
 
   const createTextTexture = (text) => {
     const canvas = document.createElement('canvas');
@@ -631,17 +699,25 @@ const Viewport3D = ({ objects }) => {
   return (
     <div className="flex flex-col relative">
       <h2>3D Viewport</h2>
-      <button
-        onClick={handleFullScreen}
-        className="absolute top-0 right-0 z-10 bg-white border border-gray-300 rounded"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
-          <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
-          <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
-          <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
-        </svg>
-      </button>
+      <div className="flex gap-2 mb-2 absolute top-0 right-0">
+        <button
+          onClick={() => exportSceneAsGLB('scene.glb')}
+          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" style={{display:'none'}}
+        >
+          Export as GLB
+        </button>
+        <button
+          onClick={handleFullScreen}
+          className=" z-10 bg-white border border-gray-300 rounded"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+            <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+          </svg>
+        </button>
+      </div>
       <div
         ref={mountRef}
         className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
@@ -652,17 +728,25 @@ const Viewport3D = ({ objects }) => {
         }}
       ></div>
       {isFullScreen && (
-        <button
-          onClick={handleFullScreen}
-          className="fixed top-4 right-4 z-50 bg-white border border-gray-300 rounded"
-        >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
-            <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
-            <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
-            <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
-          </svg>
-        </button>
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <button
+            onClick={() => exportSceneAsGLB('scene.glb')}
+            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Export as GLB
+          </button>
+          <button
+            onClick={handleFullScreen}
+            className="bg-white border border-gray-300 rounded"
+          >
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
+              <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
+              <path d="M9 19H5V15H3V21H9V19Z" strokeWidth={0.5} stroke='black' fill='white' />
+              <path d="M15 19V21H21V15H19V19H15Z" strokeWidth={0.5} stroke='black' fill='white' />
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );

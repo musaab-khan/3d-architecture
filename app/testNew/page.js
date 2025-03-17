@@ -93,10 +93,10 @@
 
 
 'use client'
-// import React, { useState, useEffect } from 'react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// import React, { useState } from 'react';
 import MoonLoader from "react-spinners/MoonLoader";
-// import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import ToolBar from './Toolbar';
 import Canvas2D from './Canvas2D';
 import Viewport3D from './Viewport3D';
@@ -107,7 +107,7 @@ import './App.css';
 
 const App = () => {
   // const router = useRouter();
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
 
   const [selectedTool, setSelectedTool] = useState(null);
   const [objectDetailsOpen, setObjectDetailsOpen] = useState(false);
@@ -115,8 +115,8 @@ const App = () => {
   const [selectedObject, setSelectedObject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  // const [projectName, setProjectName] = useState('Untitled Project');
-  // const [dimensions, setDimensions] = useState([800, 600]);
+  const [projectName, setProjectName] = useState('Untitled Project');
+  const [dimensions, setDimensions] = useState([800, 600]);
   // const [isLoading, setIsLoading] = useState(true);
   const isLoading = false;
 
@@ -182,49 +182,49 @@ const App = () => {
   //   }
   // };
 
-  // const saveProject = async () => {
-  //   try {
-  //     const projectId = searchParams.get('projectID');
+  const saveProject = async () => {
+    try {
+      const projectId = searchParams.get('projectID');
 
-  //     if (!projectId) {
-  //       console.error('No project ID found');
-  //       return;
-  //     }
+      if (!projectId) {
+        console.error('No project ID found');
+        return;
+      }
 
-  //     // Get token from local storage
-  //     const token = localStorage.getItem('token');
+      // Get token from local storage
+      const token = localStorage.getItem('token');
 
-  //     if (!token) {
-  //       console.error('No authentication token found');
-  //       return;
-  //     }
+      if (!token) {
+        console.error('No authentication token found');
+        return;
+      }
 
-  //     // Convert objects array to JSON string
-  //     const modelJSON = JSON.stringify(objects);
+      // Convert objects array to JSON string
+      const modelJSON = JSON.stringify(objects);
 
-  //     const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + 'idk/update-model-json', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({
-  //         projectID: projectId,
-  //         modelJSON: modelJSON
-  //       })
-  //     });
+      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + 'idk/update-model-json', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          projectID: projectId,
+          modelJSON: modelJSON
+        })
+      });
 
-  //     if (!response.ok) {
-  //       throw new Error('Failed to save project');
-  //     }
+      if (!response.ok) {
+        throw new Error('Failed to save project');
+      }
 
-  //     alert('Project saved successfully!');
+      alert('Project saved successfully!');
 
-  //   } catch (error) {
-  //     console.error('Error saving project:', error);
-  //     alert('Failed to save project. Please try again.');
-  //   }
-  // };
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Failed to save project. Please try again.');
+    }
+  };
 
   const handleToolSelect = (tool) => {
     setSelectedTool(tool);
@@ -256,7 +256,8 @@ const App = () => {
       <header className="app-header">
         <div className="flex justify-between items-center w-full">
           <h1>2D-to-3D Object Creator</h1>
-          {/* <div className="project-controls flex gap-4">
+          <div className="project-controls flex gap-4">
+            {/*
             <input
               type="text"
               value={projectName}
@@ -264,19 +265,20 @@ const App = () => {
               className="px-2 py-1 border rounded"
               placeholder="Project Name"
             />
+            */}
             <button
               onClick={saveProject}
               className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow-md"
             >
               Save Project
             </button>
-            <button
+            {/*<button
               onClick={loadProjectData}
               className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow-md"
             >
               Reload Project
-            </button>
-          </div> */}
+            </button>*/}
+          </div>
         </div>
       </header>
 

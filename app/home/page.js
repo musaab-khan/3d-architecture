@@ -53,9 +53,9 @@ const Page = () => {
 
     const handleModelClick = (id) => {
         // const [length, width] = dimensions;
-        router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
         // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
-        // router.push(`/testNew?projectID=${id}`);
+        // router.push(`/project?projectID=${id}&projectDimsX=${length}&projectDimsY=${width}&load=true`);
+        router.push(`/testNew?projectID=${id}`);
     };
 
     // Split models into two grids (first grid and second grid)
