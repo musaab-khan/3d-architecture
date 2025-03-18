@@ -115,72 +115,72 @@ const App = () => {
   const [selectedObject, setSelectedObject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  const [projectName, setProjectName] = useState('Untitled Project');
-  const [dimensions, setDimensions] = useState([800, 600]);
-  // const [isLoading, setIsLoading] = useState(true);
-  const isLoading = false;
+  // const [projectName, setProjectName] = useState('Untitled Project');
+  // const [dimensions, setDimensions] = useState([800, 600]);
+  const [isLoading, setIsLoading] = useState(true);
+  // const isLoading = false;
 
   // Extract projectId from URL on component mount
-  // useEffect(() => {
-  //   loadProjectData();
-  // }, []);
+  useEffect(() => {
+    loadProjectData();
+  }, []);
 
-  // const loadProjectData = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const projectId = searchParams.get('projectID');
+  const loadProjectData = async () => {
+    setIsLoading(true);
+    try {
+      const projectId = searchParams.get('projectID');
 
-  //     if (!projectId) {
-  //       setIsLoading(false);
-  //       return; // No project to load
-  //     }
+      if (!projectId) {
+        setIsLoading(false);
+        return; // No project to load
+      }
 
-  //     // Get token from local storage
-  //     const token = localStorage.getItem('token');
+      // Get token from local storage
+      const token = localStorage.getItem('token');
 
-  //     if (!token) {
-  //       console.error('No authentication token found');
-  //       setIsLoading(false);
-  //       return;
-  //     }
+      if (!token) {
+        console.error('No authentication token found');
+        setIsLoading(false);
+        return;
+      }
 
-  //     const apiUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}project/get-model-json/${projectId}`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}project/get-model-json/${projectId}`;
 
-  //     const response = await fetch(apiUrl);
+      const response = await fetch(apiUrl);
 
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to load project: ${response.status}`);
-  //     }
+      if (!response.ok) {
+        throw new Error(`Failed to load project: ${response.status}`);
+      }
 
-  //     const responseData = await response.json();
+      const responseData = await response.json();
 
-  //     // The actual project data is nested inside a "model" property
-  //     const projectData = responseData.model;
+      // The actual project data is nested inside a "model" property
+      const projectData = responseData.model;
 
-  //     if (!projectData) {
-  //       console.error('No model data found in response');
-  //       setIsLoading(false);
-  //       return;
-  //     }
+      if (!projectData) {
+        console.error('No model data found in response');
+        setIsLoading(false);
+        return;
+      }
 
-  //     // Update state with project data
-  //     setProjectName(projectData.name || 'Untitled Project');
-  //     setDimensions(projectData.dimensions || [800, 600]);
+      // Update state with project data
+      // setProjectName(projectData.name || 'Untitled Project');
+      // setDimensions(projectData.dimensions || [800, 600]);
 
-  //     // Parse modelJSON into objects array
-  //     if (projectData.modelJSON) {
-  //       const parsedObjects = JSON.parse(projectData.modelJSON);
-  //       setObjects(parsedObjects);
-  //     } else {
-  //       // console.error('modelJSON is missing in model data');
-  //       setObjects([]);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error loading project:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      // Parse modelJSON into objects array
+      if (projectData.modelJSON) {
+        const parsedObjects = JSON.parse(projectData.modelJSON);
+        setObjects(parsedObjects);
+      } else {
+        // console.error('modelJSON is missing in model data');
+        setObjects([]);
+      }
+    } catch (error) {
+      console.error('Error loading project:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const saveProject = async () => {
     try {
