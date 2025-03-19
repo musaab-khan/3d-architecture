@@ -94,19 +94,19 @@
   
   .toolbar {
     background-color: #f0f0f0;
-    padding: 10px;
+    padding: 10px 20px;
     margin-bottom: 20px;
     border-radius: 5px;
   }
   
   .tool-buttons {
     display: flex;
-    gap: 10px;
+    gap: 20px;
   }
   
   .tool-button {
     padding: 8px 16px;
-    background-color: #e0e0e0;
+    background-color: #d5d5d5;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -114,11 +114,11 @@
   }
   
   .tool-button:hover {
-    background-color: #d0d0d0;
+    background-color: #b8b8b8;
   }
   
   .tool-button.selected {
-    background-color: #4CAF50;
+    background-color: #44b548;
     color: white;
   }
   
@@ -163,7 +163,7 @@
   .tool-indicator {
     margin-top: 10px;
     padding: 5px 10px;
-    background-color: #fff9c4;
+    /* background-color: #fff9c4; */
     border-left: 3px solid #fbc02d;
   }
   
@@ -182,7 +182,7 @@
   }
   
   .object-dialog {
-    background-color: white;
+    /* background-color: white; */
     border-radius: 8px;
     padding: 20px;
     width: 400px;
@@ -212,6 +212,11 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    color: black;
+    
+  }
+  .form-group input:focus {
+    border-color: #4CAF50; 
   }
   
   .dialog-buttons {
