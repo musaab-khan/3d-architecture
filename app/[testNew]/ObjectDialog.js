@@ -43,8 +43,8 @@ const ObjectDialog = ({ selectedTool, setSelectedTool, initialPosition, onSubmit
   };
 
   return (
-    <div className="object-dialog-overlay text-white text-lg">
-      <div className="object-dialog  bg-[#313131]">
+    <div className="object-dialog-overlay">
+      <div className="object-dialog">
         <h3>Configure {selectedTool}</h3>
 
         <form onSubmit={handleSubmit}>
@@ -138,7 +138,7 @@ const ObjectDialog = ({ selectedTool, setSelectedTool, initialPosition, onSubmit
               name="textureId"
               value={formData.textureId}
               onChange={handleChange}
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 border rounded"
             >
               {TEXTURE_OPTIONS.map(texture => (
                 <option key={texture.id} value={texture.id}>
@@ -167,7 +167,7 @@ const ObjectDialog = ({ selectedTool, setSelectedTool, initialPosition, onSubmit
           <div className="dialog-buttons mt-6 flex justify-end gap-4">
             <button
               type="button"
-              className="px-4 py-2 border rounded hover:bg-gray-700"
+              className="px-4 py-2 border rounded hover:bg-gray-100"
               onClick={onClose}
             >
               Cancel

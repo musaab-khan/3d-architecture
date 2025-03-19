@@ -161,8 +161,8 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
 
   return (
     <div className="canvas-container relative">
-      <h2 className='m-1 text-white text-xl'>2D Canvas</h2>
-      <button onClick={handleFullScreen} className="mt-1 absolute top-0 right-0 border-2 rounded-md">
+      <h2>2D Canvas</h2>
+      <button onClick={handleFullScreen} className="absolute top-0 right-0 border-2 rounded-md">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
           <path d="M19 5V9H21V3H15V5H19Z" strokeWidth={0.5} stroke='black' fill='white' />
@@ -174,13 +174,12 @@ const Canvas2D = ({ objects, setObjects, selectedTool, onAddObject, selectedObje
         ref={canvasRef}
         width={500}
         height={500}
-        className={`canvas-2dv shadow-md shadow-slate-600 bg-[#f5f5f5] border-2 border-white ${isFullScreen ? 'fixed top-0 left-0 z-30' : ''}`}
+        className={`canvas-2dv ${isFullScreen ? 'fixed top-0 left-0 z-30' : ''}`}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
-        // style={{ border: '', background: '#f5f5f5' }}
-        
+        style={{ border: '1px solid black', background: '#f5f5f5' }}
       ></canvas>
       {isFullScreen && (
         <button onClick={handleFullScreen} className="fixed top-4 right-4 z-30">
