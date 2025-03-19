@@ -698,7 +698,7 @@ const Viewport3D = ({ objects }) => {
 
   return (
     <div className="flex flex-col relative">
-      <h2>3D Viewport</h2>
+      <h2 className='m-1 text-xl text-white'>3D Viewport</h2>
       <div className="flex gap-2 mb-2 absolute top-0 right-0">
         <button
           onClick={() => exportSceneAsGLB('scene.glb')}
@@ -708,7 +708,7 @@ const Viewport3D = ({ objects }) => {
         </button>
         <button
           onClick={handleFullScreen}
-          className=" z-10 bg-white border border-gray-300 rounded"
+          className=" z-10  border-2 rounded-md mt-1"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 5H9V3H3V9H5V5Z" strokeWidth={0.5} stroke='black' fill='white' />
@@ -720,16 +720,16 @@ const Viewport3D = ({ objects }) => {
       </div>
       <div
         ref={mountRef}
-        className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : ""}
+        className={isFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50" : "shadow-md shadow-slate-600"}
         style={{
           width: isFullScreen ? '100vw' : '501px',
           height: isFullScreen ? '100vh' : '501px',
-          border: '1px solid black'
+          // border: '2px solid white'
         }}
       ></div>
       {isFullScreen && (
         <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <button
+          <button style={{display:'none'}}
             onClick={() => exportSceneAsGLB('scene.glb')}
             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
