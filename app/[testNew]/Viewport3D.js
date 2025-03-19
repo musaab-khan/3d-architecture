@@ -702,7 +702,7 @@ const Viewport3D = ({ objects }) => {
       <div className="flex gap-2 mb-2 absolute top-0 right-0">
         <button
           onClick={() => exportSceneAsGLB('scene.glb')}
-          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" style={{display:'none'}}
+          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Export as GLB
         </button>
@@ -729,7 +729,7 @@ const Viewport3D = ({ objects }) => {
       ></div>
       {isFullScreen && (
         <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <button style={{display:'none'}}
+          <button
             onClick={() => exportSceneAsGLB('scene.glb')}
             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
