@@ -115,7 +115,7 @@ const App = () => {
   const [selectedObject, setSelectedObject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  // const [projectName, setProjectName] = useState('Untitled Project');
+  const [projectName, setProjectName] = useState('Project');
   // const [dimensions, setDimensions] = useState([800, 600]);
   const [isLoading, setIsLoading] = useState(true);
   // const isLoading = false;
@@ -152,10 +152,12 @@ const App = () => {
         throw new Error(`Failed to load project: ${response.status}`);
       }
 
+
       const responseData = await response.json();
 
       // The actual project data is nested inside a "model" property
       const projectData = responseData.model;
+      // console.log(projectData.name);
 
       if (!projectData) {
         console.error('No model data found in response');
@@ -164,7 +166,7 @@ const App = () => {
       }
 
       // Update state with project data
-      // setProjectName(projectData.name || 'Untitled Project');
+      setProjectName(projectData.name || 'Project');
       // setDimensions(projectData.dimensions || [800, 600]);
 
       // Parse modelJSON into objects array
@@ -246,87 +248,93 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className='fixed top-[50%] left-[50%]'>
-        <MoonLoader />
+      <div className='h-[100vh] w-[100vw]' style={{ background: 'linear-gradient(90deg, #181818, #424242)' }}>
+        <div className='fixed top-[50%] left-[50%]'>
+          <MoonLoader color='white' />
+        </div>
       </div>)
+
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="flex justify-between items-center w-full">
-          <h1>2D-to-3D Object Creator</h1>
-          <div className="project-controls flex gap-4">
-            {/*
-            <input
-              type="text"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              className="px-2 py-1 border rounded"
-              placeholder="Project Name"
-            />
-            */}
-            <button
-              onClick={saveProject}
-              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow-md"
-            >
-              Save Project
-            </button>
-            {/*<button
-              onClick={loadProjectData}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow-md"
-            >
-              Reload Project
-            </button>*/}
+    <div style={{ background: 'linear-gradient(90deg, #181818, #424242)' }}>
+      <div className="app-container" >
+        {/* <div className="px-[10%] py-[5%]" style={{background: 'linear-gradient(90deg, #181818, #424242)'}}> */}
+        <header className="app-header">
+          <div className="flex justify-between items-center w-full">
+            <h1 className='capitalize text-white font-bold text-2xl'>{projectName?`${projectName}`: "Project"}</h1>
+            <div className="project-controls flex gap-4">
+              {/*
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="px-2 py-1 border rounded"
+                placeholder="Project Name"
+              />
+              */}
+              <button
+                onClick={saveProject}
+                className="px-4 py-2 bg-green-500 hover:bg-green-600 active:bg-green-700 shadow-green-950 text-white rounded shadow-md"
+              >
+                Save Project
+              </button>
+              {/*<button
+                onClick={loadProjectData}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow-md"
+              >
+                Reload Project
+              </button>*/}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <ToolBar
-        selectedTool={selectedTool}
-        onToolSelect={handleToolSelect}
-      />
-
-      <div className="viewport-container justify-evenly">
-        <Canvas2D
-          objects={objects}
-          setObjects={setObjects}
+        <ToolBar
           selectedTool={selectedTool}
-          onAddObject={handleAddObject}
-          selectedObject={selectedObject}
-          setSelectedObject={setSelectedObject}
+          onToolSelect={handleToolSelect}
         />
 
-        <Viewport3D objects={objects} />
+        <div className="viewport-container justify-evenly">
+          <Canvas2D
+            objects={objects}
+            setObjects={setObjects}
+            selectedTool={selectedTool}
+            onAddObject={handleAddObject}
+            selectedObject={selectedObject}
+            setSelectedObject={setSelectedObject}
+          />
+
+          <Viewport3D objects={objects} />
+        </div>
+        <ObjectsList objects={objects} selectedObject={selectedObject} setSelectedObject={setSelectedObject}></ObjectsList>
+        {isDialogOpen && (
+          <ObjectDialog
+            selectedTool={selectedTool}
+            setSelectedTool={setSelectedTool}
+            initialPosition={initialPosition}
+            onSubmit={handleObjectCreate}
+            onClose={handleDialogClose}
+          />
+        )}
+        {(selectedObject && !objectDetailsOpen) && (
+          <button className='fixed top-[50%] right-0 px-1 py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-l-md shadow-md z-50' onClick={() => setObjectDetailsOpen(!objectDetailsOpen)}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-180" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+            </svg>
+          </button>
+        )}
+        {(selectedObject && objectDetailsOpen) && (
+          <div className="selected-object-info fixed top-0 right-0 p-4 bg-white shadow-md w-[30vw] h-[100vh] overflow-y-auto z-50">
+            <div className="flex justify-between items-center">
+              <p className='font-semibold text-white p-1'>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
+              <button className='p-1 mr-1 text-slate-300 hover:text-slate-200 active:text-slate-100 rounded-md' onClick={() => { setObjectDetailsOpen(!objectDetailsOpen); }}>
+                &#10006;
+              </button>
+            </div>
+            <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
+          </div>
+        )}
       </div>
-      <ObjectsList objects={objects} selectedObject={selectedObject} setSelectedObject={setSelectedObject}></ObjectsList>
-      {isDialogOpen && (
-        <ObjectDialog
-          selectedTool={selectedTool}
-          setSelectedTool={setSelectedTool}
-          initialPosition={initialPosition}
-          onSubmit={handleObjectCreate}
-          onClose={handleDialogClose}
-        />
-      )}
-      {(selectedObject && !objectDetailsOpen) && (
-        <button className='fixed top-[50%] right-0 px-1 py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-l-md shadow-md z-50' onClick={() => setObjectDetailsOpen(!objectDetailsOpen)}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-          </svg>
-        </button>
-      )}
-      {(selectedObject && objectDetailsOpen) && (
-        <div className="selected-object-info fixed top-0 right-0 p-4 bg-white shadow-md w-[30vw] h-[100vh] overflow-y-auto z-50">
-          <div className="flex justify-between items-center">
-            <p>Selected: {selectedObject.name} at ({Math.round(selectedObject.x)}, {Math.round(selectedObject.y)})</p>
-            <button className='p-1 mr-1 text-slate-500 rounded-md' onClick={() => { setObjectDetailsOpen(!objectDetailsOpen); }}>
-              &#10006;
-            </button>
-          </div>
-          <ObjectPropertiesEditor selectedObject={selectedObject} setObjects={setObjects} setSelected={setSelectedObject} />
-        </div>
-      )}
     </div>
   );
 };

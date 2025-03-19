@@ -47,19 +47,19 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
   if (!selectedObject) return null;
 
   return (
-    <div className="object-properties-editor p-4 border rounded-md bg-white shadow-sm h-max-[100vh] overflow-y-auto z-50">
+    <div className="text-white object-properties-editor p-4 border rounded-md bg-[#313131] shadow-sm h-max-[100vh] overflow-y-auto z-50">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium">Object Properties</h3>
+        <h3 className="text-xl font-medium underline capitalize">Object Properties</h3>
         <div className="flex gap-2">
           <button
             onClick={handleDelete}
-            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+            className="px-2 py-1 bg-red-500 shadow-sm shadow-red-950 text-white rounded hover:bg-red-600 transition-colors text-sm"
           >
             Delete
           </button>
           <button
             onClick={handleDuplicate}
-            className="px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors text-sm"
+            className="px-2 py-1 bg-indigo-500 shadow-sm shadow-indigo-950 text-white rounded hover:bg-indigo-600 transition-colors text-sm"
           >
             Duplicate
           </button>
@@ -67,7 +67,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
       </div>
       
       <div className="flex flex-col mb-4">
-        <label className="text-sm text-gray-600">Name</label>
+        <label className="text-sm text-gray-300">Name</label>
         <input 
           type="text" 
           value={selectedObject.name}
@@ -78,7 +78,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">X Position</label>
+          <label className="text-sm text-gray-300">X Position</label>
           <input 
             type="number" 
             value={selectedObject.x || 0}
@@ -87,7 +87,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Y Position</label>
+          <label className="text-sm text-gray-300">Y Position</label>
           <input 
             type="number" 
             value={selectedObject.y || 0}
@@ -96,7 +96,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Z Position</label>
+          <label className="text-sm text-gray-300">Z Position</label>
           <input 
             type="number" 
             value={selectedObject.z || 0}
@@ -108,7 +108,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Rotate X</label>
+          <label className="text-sm text-gray-300">Rotate X</label>
           <input 
             type="number" 
             value={selectedObject.rotateX || 0}
@@ -117,7 +117,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Rotate Y</label>
+          <label className="text-sm text-gray-300">Rotate Y</label>
           <input 
             type="number" 
             value={selectedObject.rotateY || 0}
@@ -126,7 +126,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Rotate Z</label>
+          <label className="text-sm text-gray-300">Rotate Z</label>
           <input 
             type="number" 
             value={selectedObject.rotateZ || 0}
@@ -138,7 +138,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Width</label>
+          <label className="text-sm text-gray-300">Width</label>
           <input 
             type="number" 
             value={selectedObject.width || 0}
@@ -147,7 +147,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Height</label>
+          <label className="text-sm text-gray-300">Height</label>
           <input 
             type="number" 
             value={selectedObject.height || 0}
@@ -156,7 +156,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Depth</label>
+          <label className="text-sm text-gray-300">Depth</label>
           <input 
             type="number" 
             value={selectedObject.depth || 0}
@@ -168,27 +168,27 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Color</label>
+          <label className="text-sm text-gray-300">Color</label>
           <div className="flex gap-2">
-            <input 
+            {/* <input 
               type="text" 
               value={selectedObject.color || '#3B82F6'}
               onChange={(e) => handlePropertyChange('color', e.target.value)}
               pattern="^#([A-Fa-f0-9]{6})$"
               placeholder="#RRGGBB"
               className="border rounded p-1 text-sm w-24 border-gray-300"
-            />
+            /> */}
             <input
               type="color"
               value={selectedObject.color}
               onChange={(e) => handlePropertyChange('color', e.target.value)}
-              className="h-8 w-10 border-0 cursor-pointer"
+              className="h-8 w-full border-0 cursor-pointer"
             />
           </div>
         </div>
 
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Texture Repeat</label>
+          <label className="text-sm text-gray-300">Texture Repeat</label>
           <input 
             type="number" 
             value={selectedObject.textureRepeat || 1}
@@ -201,7 +201,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
       </div>
 
       <div className="flex flex-col mb-4">
-        <label className="text-sm text-gray-600">Texture URL</label>
+        <label className="text-sm text-gray-300">Texture URL</label>
         <div className="flex gap-2">
           <input 
             type="text" 
@@ -225,13 +225,13 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
       </div>
       
       <div className="flex flex-col mb-4">
-        <label className="text-sm text-gray-600">Texture</label>
+        <label className="text-sm text-gray-300">Texture</label>
         <div className="grid grid-cols-3 gap-2">
           {TEXTURE_OPTIONS.map(texture => (
             <button
               key={texture.id}
               onClick={() => handleTextureChange(texture.url)}
-              className={`p-2 border rounded-md flex flex-col items-center justify-center border-gray-300`}
+              className={`p-2 border rounded-md text-[#333] flex flex-col items-center justify-center bg-[#e9e9e9] border-gray-300`}
               // className={`p-2 border rounded-md flex flex-col items-center justify-center ${
               //   selectedObject.textureId === texture.id ? 'border-blue-500' : 'border-gray-300'
               // }`}
@@ -239,7 +239,7 @@ const ObjectPropertiesEditor = ({ selectedObject, setObjects, setSelected }) => 
               {texture.url ? (
                 <img src={texture.url} alt={texture.name} className="w-12 h-12 object-cover rounded" />
               ) : (
-                <div className="w-12 h-12 bg-gray-200 flex items-center justify-center text-sm">
+                <div className="w-12 h-12 border border-black flex items-center justify-center text-sm">
                   No Texture
                 </div>
               )}
