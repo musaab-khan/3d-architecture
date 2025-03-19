@@ -3,7 +3,7 @@ import React from 'react';
 const ToolBar = ({ selectedTool, onToolSelect }) => {
   const tools = [
     { id: 'ball', label: 'Ball', shape: <div className='w-5 h-5 rounded-full border border-black'></div> },
-    { id: 'wall', label: 'Wall', shape: <div className='w-5 h-[1px] rounded-full border border-black'></div> },
+    { id: 'wall', label: 'Wall', shape: <div className='h-5 w-[1px] rounded-full border border-black'></div> },
     { id: 'box', label: 'Box', shape: <div className='w-5 h-5 border border-black'></div> },
     // { id: 'pyramid', label: 'Pyramid' }
   ];
