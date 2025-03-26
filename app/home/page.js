@@ -65,9 +65,9 @@ const Page = () => {
     return (
         <div className='flex flex-col items-center text-white justify-evenly py-10' style={{ background: 'linear-gradient(90deg, #181818, #424242)' }}>
 
-            <div className='flex w-[100%] pl-[8%] justify-center md:justify-start mb-10'>
-                <div className='relative w-[25vh] h-[13vh]'>
-                    <Image src='/assets/logo1.png' alt='' fill className='rounded-lg' />
+            <div className='flex w-[100%] pl-[8%] justify-center mb-10'>
+                <div className='relative w-[25vh] h-[13vh]  scale-150'>
+                    <Image src='/assets/logo.svg' alt='' fill className='rounded-lg' />
                 </div>
             </div>
 

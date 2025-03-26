@@ -1,4 +1,4 @@
-export { default as logo } from './logo.png';
+export { default as logo } from './logo.svg';
 export { default as edit } from './edit.svg';
 export { default as modeling } from './3d-modeling.svg';
 export { default as Export } from './export.svg';

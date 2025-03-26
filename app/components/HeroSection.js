@@ -14,8 +14,8 @@ const HeroSection = () => {
 
   return (
     <div className='flex flex-col items-center h-screen text-white justify-evenly' style={{background: 'linear-gradient(90deg, #181818, #424242)'}}>
-      <div className='relative w-[25vh] h-[13vh]'>
-        <Image src='/assets/logo1.png' alt='' fill className='rounded-lg'/>
+      <div className='relative w-[25vh] h-[13vh] scale-[180%]'>
+        <Image src='/assets/logo.svg' alt='' fill className='rounded-lg'/>
       </div>
       <div className='text-center sp sm:space-y-10 w-[85%]'>
         <h1 className='text-4xl lg:text-6xl font-bold'>Design your dream home in 3D</h1>

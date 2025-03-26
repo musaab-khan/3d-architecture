@@ -7,8 +7,8 @@ const page = () => {
 
   return (
     <div className='flex flex-col items-center h-screen text-white justify-evenly' style={{background: 'linear-gradient(90deg, #181818, #424242)'}}>
-        <div className='relative w-[25vh] h-[13vh]'>
-            <Image src='/assets/logo1.png' alt='' fill className='rounded-lg'/>
+        <div className='relative w-[30vh] h-[18vh]'>
+            <Image src='/assets/logo.svg' alt='' fill className='rounded-lg'/>
         </div>
         <div className='flex flex-col md:flex-row justify-evenly w-screen items-center'>
             <SignupForm></SignupForm>
