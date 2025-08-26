@@ -1,7 +1,7 @@
 "use client"
 import React, { useRef, useState } from "react";
 
-export default (props) => {
+export default User= (props) => {
     const videoEl = useRef(null);
     const [isPlaying, setPlaying] = useState(false);
 
