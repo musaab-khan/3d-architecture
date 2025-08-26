@@ -72,12 +72,14 @@ export async function generateMetadata({ searchParams }) {
             ],
         },
         twitter: {
-          card: "player",
+          card: "summary_large_image",
           title: videoData.title,
           description: videoData.description,
           image: videoData.imageUrl,
-          player: `https://carets.tv/embed/${videoData.id}`
-        }
+          player: `https://carets.tv/embed/${videoData.id}`,
+          player_width: 1200,
+          player_height: 630,
+        },
     };
 }
 
@@ -87,10 +89,6 @@ export default async function VideoPage({ searchParams }) {
 
     return (
       <>
-          <Head>
-            <meta name="twitter:player:width" content="1200" />
-            <meta name="twitter:player:height" content="630" />
-          </Head>
         <div className="customContainer">
             <div className="mt-14">
                 <User data={videoData} />
