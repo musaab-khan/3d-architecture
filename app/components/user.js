@@ -1,111 +1,60 @@
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import User from "../components/user";
+"use client";
+import React, { useRef, useState } from "react";
 
-const fetchVideoData = cache(async (video_id) => {
-  
+const User = (props) => {
+    const videoEl = useRef(null);
+    const [isPlaying, setPlaying] = useState(false);
 
-  let videoData = {
-    id: null,
-    username: "",
-    tags: [],
-    music: "",
-    videoUrl: "",
-    imageUrl: "",
-    title: "",
-    description: "",
-  };
-
-  try {
-    const response = await fetch(
-      `https://api.carets.tv/api/v1/videos/singleVideo/${video_id}`,
-      {
-        cache: "no-store",
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const { data: video } = await response.json();
-
-
-    videoData = {
-      id: video.id,
-      username: video.users?.[0]?.username || "",
-      tags: video.video_description ? video.video_description.split(" ") : [],
-      music: video.sounds?.[0]?.name || "",
-      videoUrl: video.video_url || "",
-      imageUrl: video.image_url || "",
-      title: video.video_title || "",
-      description: video.video_description || "",
+    const playVideo = () => {
+        videoEl.current.play();
+        videoEl.current.addEventListener("ended", myHandler, false);
+        setPlaying(true);
     };
-  } catch (error) {
-    console.error("Error fetching video:", error);
-    notFound(); // Trigger 404 on fetch error
-  }
 
-  return videoData;
-});
+    const myHandler = () => {
+        setPlaying(false);
+    };
 
-export async function generateMetadata({ searchParams }) {
-  const video_id = searchParams?.video_id || null;
+    let data = props.data;
 
-  const videoData = await fetchVideoData(video_id);
+    return (
+        <div className="text-center">
+            <div className="text-3xl font-semibold">{data.username}</div>
+            <div>
+                {data.tags &&
+                    data.tags.map((elem, index) => (
+                        <span className="inline-flex mx-3 mt-1" key={index}>
+                            {elem}
+                        </span>
+                    ))}
+            </div>
+            <div className="inline-flex items-center mt-2">
+                <span className="text-lg font-bold">♬</span>
+                <span className="ml-1">{data.music}</span>
+            </div>
+            <div className="mt-5">
+                <div className="relative inline-block w-full max-w-5xl mx-auto">
+                    <video
+                        playsInline={true}
+                        className="w-full h-screen"
+                        ref={videoEl}
+                        width={360}
+                        height={1200}
+                        src={
+                            data.videoUrl
+                                ? data.videoUrl
+                                : "https://caretsffmpeg.s3.amazonaws.com/promosvideos/caretsintrodesktop.mp4"
+                        }
+                    />
+                    {!isPlaying && (
+                        <button className="playBtn" onClick={playVideo}>
+                            Play
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
-  return {
-    title: videoData.username || "Video Page",
-    openGraph: {
-      type: "video.other",
-      title: videoData.title || "Video Page",
-      description: videoData.description || "Watch this video on Carets.tv",
-      url: `https://carets.tv/project?video_id=${videoData.id}`,
-      images: [
-        {
-          url: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-          width: 400,
-          height: 300,
-          type: "image/png",
-          secureUrl: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-        },
-      ],
-      videos: [
-        {
-          url: videoData.videoUrl,
-          secureUrl: videoData.videoUrl,
-          type: "video/mp4",
-          width: 1200,
-          height: 630,
-        },
-      ],
-    },
-    twitter: {
-      card: "player",
-      title: videoData.title || "Video Page",
-      description: videoData.description || "Watch this video on Carets.tv",
-      images: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-      player: {
-        url: `https://carets.tv/project?video_id=${videoData.id}`,
-        width: 1200,
-        height: 630,
-      },
-    },
-  };
-}
-
-export default async function VideoPage({ searchParams }) {
-  const video_id = searchParams?.video_id || null;
-
-  if (!video_id) {
-    notFound(); // Trigger 404 if video_id is missing
-  }
-
-  const videoData = await fetchVideoData(video_id);
-
-  return (
-    <div className="customContainer">
-      <div className="mt-14">
-        <User data={videoData} />
-      </div>
-    </div>
-  );
-}
+export default User;
