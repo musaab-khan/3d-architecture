@@ -54,7 +54,7 @@ export async function generateMetadata({ searchParams }) {
             images: [
                 {
                 type: "image/gif",
-                url: videoData.imageUrl,
+                url: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
                 secureUrl: videoData.imageUrl,
                 width: 400,
                 height: 300,
