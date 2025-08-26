@@ -1,6 +1,5 @@
 import User from "../components/user";
 import {cache} from 'react'
-import Head from "next/head";
 
 const fetchVideoData = cache(async (video_id) => {
   let videoData = {
