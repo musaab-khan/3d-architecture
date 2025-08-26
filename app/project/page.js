@@ -1,5 +1,5 @@
 import User from "../components/user";
-import {cache} from 'react'
+import {cache} from 'react';
 
 const fetchVideoData = cache(async (video_id) => {
   let videoData = {
@@ -40,7 +40,7 @@ const fetchVideoData = cache(async (video_id) => {
 });
 
 export async function generateMetadata({ searchParams }) {
-    const {video_id} = searchParams;
+    const {video_id} = await searchParams;
   
     const videoData = await fetchVideoData(video_id);
 
@@ -71,19 +71,22 @@ export async function generateMetadata({ searchParams }) {
             ],
         },
         twitter: {
-          card: "summary_large_image",
-          title: videoData.title,
-          description: videoData.description,
-          image: videoData.imageUrl,
-          player: `https://carets.tv/embed/${videoData.id}`,
-          player_width: 1200,
-          player_height: 630,
+          card: 'player',
+          images: videoData.imageUrl,
+          players: [
+            {
+              playerUrl: videoData.videoUrl,
+              streamUrl: videoData.videoUrl,
+              width: 1200,
+              height: 630,
+            },
+          ],
         },
     };
 }
 
 export default async function VideoPage({ searchParams }) {
-    const {video_id} = searchParams;
+    const {video_id} = await searchParams;
     const videoData = await fetchVideoData(video_id);
 
     return (
