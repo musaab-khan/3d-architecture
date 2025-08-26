@@ -40,7 +40,7 @@ const fetchVideoData = cache(async (video_id) => {
 });
 
 export async function generateMetadata({ searchParams }) {
-    const {video_id} = await searchParams;
+    const {video_id} = searchParams;
   
     const videoData = await fetchVideoData(video_id);
 
@@ -85,7 +85,7 @@ export async function generateMetadata({ searchParams }) {
 }
 
 export default async function VideoPage({ searchParams }) {
-    const {video_id} = await searchParams;
+    const {video_id} = searchParams;
     const videoData = await fetchVideoData(video_id);
 
     return (
