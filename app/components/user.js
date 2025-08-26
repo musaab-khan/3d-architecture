@@ -1,60 +1,100 @@
-"use client";
-import React, { useRef, useState } from "react";
+import User from "../components/user";
+import {cache} from 'react'
 
-const User = (props) => {
-    const videoEl = useRef(null);
-    const [isPlaying, setPlaying] = useState(false);
+const fetchVideoData = cache(async (video_id) => {
+  let videoData = {
+    id: null,
+    username: "",
+    tags: [],
+    music: "",
+    videoUrl: "",
+    imageUrl: "",
+    title: "",
+    description: "",
+  };
+  
+  try {
+    const response = await fetch(`https://api.carets.tv/api/v1/videos/singleVideo/${video_id}`, {
+      cache: "no-store",
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const { data: video } = await response.json();
 
-    const playVideo = () => {
-        videoEl.current.play();
-        videoEl.current.addEventListener("ended", myHandler, false);
-        setPlaying(true);
+    videoData = {
+      id: video.id || null,
+      username: video.users?.[0]?.username || "",
+      tags: video.video_description ? video.video_description.split(" ") : [],
+      music: video.sounds?.[0]?.name || "",
+      videoUrl: video.video_url || "",
+      imageUrl: video.image_url || "",
+      title: video.video_title || "",
+      description: video.video_description || "",
     };
+  } catch (error) {
+    console.error("Error fetching video:", error);
+  }
 
-    const myHandler = () => {
-        setPlaying(false);
+  return videoData;
+});
+
+export async function generateMetadata({ searchParams }) {
+    const {video_id} = await searchParams;
+  
+    const videoData = await fetchVideoData(video_id);
+
+    return {
+        title: "Video Page",
+        openGraph: {
+            title: videoData.title,
+            type: "video.other",
+            description: videoData.description,
+            url: `https://carets.tv/videos?video_id=${videoData.id}`,
+            images: [
+                {
+                type: "image/png",
+                url: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
+                secureUrl: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
+                width: 400,
+                height: 300,
+                },
+            ],
+            videos: [
+                {
+                type: "video/mp4",
+                url: videoData.videoUrl,
+                secureUrl: videoData.videoUrl,
+                width: 1200,
+                height: 630,
+                },
+            ],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: videoData.title,
+            description: videoData.description,
+            image: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
+            player: {
+                url: `https://carets.tv/videos?video_id=${videoData.id}`,
+                width: 1200,
+                height: 630,
+            },
+        },
     };
+}
 
-    let data = props.data;
+export default async function VideoPage({ searchParams }) {
+    const {video_id} = await searchParams;
+    const videoData = await fetchVideoData(video_id);
 
     return (
-        <div className="text-center">
-            <div className="text-3xl font-semibold">{data.username}</div>
-            <div>
-                {data.tags &&
-                    data.tags.map((elem, index) => (
-                        <span className="inline-flex mx-3 mt-1" key={index}>
-                            {elem}
-                        </span>
-                    ))}
-            </div>
-            <div className="inline-flex items-center mt-2">
-                <span className="text-lg font-bold">♬</span>
-                <span className="ml-1">{data.music}</span>
-            </div>
-            <div className="mt-5">
-                <div className="relative inline-block w-full max-w-5xl mx-auto">
-                    <video
-                        playsInline={true}
-                        className="w-full h-screen"
-                        ref={videoEl}
-                        width={360}
-                        height={1200}
-                        src={
-                            data.videoUrl
-                                ? data.videoUrl
-                                : "https://caretsffmpeg.s3.amazonaws.com/promosvideos/caretsintrodesktop.mp4"
-                        }
-                    />
-                    {!isPlaying && (
-                        <button className="playBtn" onClick={playVideo}>
-                            Play
-                        </button>
-                    )}
-                </div>
+      <>
+        <div className="customContainer">
+            <div className="mt-14">
+                <User data={videoData} />
             </div>
         </div>
+      </>
     );
-};
-
-export default User;
+}
