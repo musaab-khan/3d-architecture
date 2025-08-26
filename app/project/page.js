@@ -1,9 +1,8 @@
-// app/project/page.js
-import { cache } from "react";
 import User from "../components/user";
+import {cache} from 'react'
+import Head from "next/head";
 
 const fetchVideoData = cache(async (video_id) => {
-  
   let videoData = {
     id: null,
     username: "",
@@ -14,25 +13,18 @@ const fetchVideoData = cache(async (video_id) => {
     title: "",
     description: "",
   };
-
+  
   try {
-    const response = await fetch(
-      `https://api.carets.tv/api/v1/videos/singleVideo/${video_id}`,
-      {
-        cache: "no-store",
-      }
-    );
+    const response = await fetch(`https://api.carets.tv/api/v1/videos/singleVideo/${video_id}`, {
+      cache: "no-store",
+    })
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const { data: video } = await response.json();
 
-    if (!video || !video.id) {
-      notFound(); // Trigger 404 if video is null or has no id
-    }
-
     videoData = {
-      id: video.id,
+      id: video.id || null,
       username: video.users?.[0]?.username || "",
       tags: video.video_description ? video.video_description.split(" ") : [],
       music: video.sounds?.[0]?.name || "",
@@ -49,60 +41,61 @@ const fetchVideoData = cache(async (video_id) => {
 });
 
 export async function generateMetadata({ searchParams }) {
-  const video_id = searchParams?.video_id || null;
+    const {video_id} = searchParams;
+  
+    const videoData = await fetchVideoData(video_id);
 
-  const videoData = await fetchVideoData(video_id);
-
-  return {
-    title: videoData.username || "Video Page",
-    openGraph: {
-      type: "video.other",
-      title: videoData.title || "Video Page",
-      description: videoData.description || "Watch this video on Carets.tv",
-      url: `https://carets.tv/project?video_id=${videoData.id}`,
-      images: [
-        {
-          url: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-          width: 400,
-          height: 300,
-          type: "image/png",
-          secureUrl: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
+    return {
+        title: "Video Page",
+        openGraph: {
+            title: videoData.title,
+            type: "video.other",
+            description: videoData.description,
+            url: `https://carets.tv/videos?video_id=${videoData.id}`,
+            images: [
+                {
+                type: "image/gif",
+                url: videoData.imageUrl,
+                secureUrl: videoData.imageUrl,
+                width: 400,
+                height: 300,
+                },
+            ],
+            videos: [
+                {
+                type: "video/mp4",
+                url: videoData.videoUrl,
+                secureUrl: videoData.videoUrl,
+                width: 1200,
+                height: 630,
+                },
+            ],
         },
-      ],
-      videos: [
-        {
-          url: videoData.videoUrl,
-          secureUrl: videoData.videoUrl,
-          type: "video/mp4",
-          width: 1200,
-          height: 630,
-        },
-      ],
-    },
-    twitter: {
-      card: "player",
-      title: videoData.title || "Video Page",
-      description: videoData.description || "Watch this video on Carets.tv",
-      images: videoData.imageUrl || "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-      player: {
-        url: `https://carets.tv/project?video_id=${videoData.id}`,
-        width: 1200,
-        height: 630,
-      },
-    },
-  };
+        twitter: {
+          card: "player",
+          title: videoData.title,
+          description: videoData.description,
+          image: videoData.imageUrl,
+          player: `https://carets.tv/embed/${videoData.id}`
+        }
+    };
 }
 
 export default async function VideoPage({ searchParams }) {
-  const video_id = searchParams?.video_id || null;
+    const {video_id} = searchParams;
+    const videoData = await fetchVideoData(video_id);
 
-  const videoData = await fetchVideoData(video_id);
-
-  return (
-    <div className="customContainer">
-      <div className="mt-14">
-        <User data={videoData} />
-      </div>
-    </div>
-  );
+    return (
+      <>
+          <Head>
+            <meta name="twitter:player:width" content="1200" />
+            <meta name="twitter:player:height" content="630" />
+          </Head>
+        <div className="customContainer">
+            <div className="mt-14">
+                <User data={videoData} />
+            </div>
+        </div>
+      </>
+    );
 }
