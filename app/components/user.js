@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import React, { useRef, useState } from "react";
 
-export default User= (props) => {
+const User = (props) => {
     const videoEl = useRef(null);
     const [isPlaying, setPlaying] = useState(false);
 
@@ -40,12 +40,14 @@ export default User= (props) => {
                         ref={videoEl}
                         width={360}
                         height={1200}
-                        src={data.videoUrl?data.videoUrl:"https://caretsffmpeg.s3.amazonaws.com/promosvideos/caretsintrodesktop.mp4"}
-                        // src="https://caretsffmpeg.s3.amazonaws.com/promosvideos/caretsintrodesktop.mp4"
+                        src={
+                            data.videoUrl
+                                ? data.videoUrl
+                                : "https://caretsffmpeg.s3.amazonaws.com/promosvideos/caretsintrodesktop.mp4"
+                        }
                     />
                     {!isPlaying && (
                         <button className="playBtn" onClick={playVideo}>
-                            {/* <Image src={triangle} alt="Play" /> */}
                             Play
                         </button>
                     )}
@@ -54,3 +56,5 @@ export default User= (props) => {
         </div>
     );
 };
+
+export default User;
