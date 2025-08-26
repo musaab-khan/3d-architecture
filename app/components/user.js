@@ -1,4 +1,3 @@
-// app/project/page.js
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import User from "../components/user";
