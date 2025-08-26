@@ -1,5 +1,5 @@
 import User from "../components/user";
-import {cache} from 'react';
+import {cache} from 'react'
 
 const fetchVideoData = cache(async (video_id) => {
   let videoData = {
@@ -73,9 +73,10 @@ export async function generateMetadata({ searchParams }) {
         twitter: {
           card: 'player',
           images: videoData.imageUrl,
+          url: `https://carets.tv/videos?video_id=${videoData.id}`,
           players: [
             {
-              playerUrl: videoData.videoUrl,
+              playerUrl: `https://carets.tv/embed/${videoData.id}`,
               streamUrl: videoData.videoUrl,
               width: 1200,
               height: 630,
