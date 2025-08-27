@@ -54,8 +54,8 @@ export async function generateMetadata({ searchParams }) {
             images: [
                 {
                 type: "image/gif",
-                url: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
-                secureUrl: "https://carets.tv/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F11.d4f9b12c.png&w=384&q=75",
+                url: "https://user-images.githubusercontent.com/14011726/94132137-7d4fc100-fe7c-11ea-8512-69f90cb65e48.gif",
+                secureUrl: "https://user-images.githubusercontent.com/14011726/94132137-7d4fc100-fe7c-11ea-8512-69f90cb65e48.gif",
                 width: 400,
                 height: 300,
                 },
